@@ -2,7 +2,9 @@ package edu.java.bot.bot;
 
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.UpdatesListener;
+import com.pengrad.telegrambot.model.BotCommand;
 import com.pengrad.telegrambot.request.SendMessage;
+import com.pengrad.telegrambot.request.SetMyCommands;
 import edu.database.Database;
 import edu.database.StubDatabase;
 import edu.java.bot.bot.commands.CommandsManager;
@@ -23,6 +25,7 @@ public class Bot implements CommandLineRunner {
     private final LinksHandler linksHandler;
     private final Database database;
     private final CommandsManager commandsManager;
+    private final TelegramBot bot;
 
     @Autowired
     public Bot(Environment env, LinksHandler linksHandler) {
@@ -30,11 +33,18 @@ public class Bot implements CommandLineRunner {
         this.linksHandler = linksHandler;
         this.database = new StubDatabase(new HashMap<>(), new HashMap<>());
         this.commandsManager = new CommandsManager(database, linksHandler);
+        this.bot = new TelegramBot(env.getProperty("telegram_api_key"));
     }
 
     @Override
     public void run(String... args) throws Exception {
-        TelegramBot bot = new TelegramBot(env.getProperty("telegram_api_key"));
+        setUpdatesListener();
+        setMyCommands();
+
+        log.info("Bot started.");
+    }
+
+    private void setUpdatesListener() {
         bot.setUpdatesListener(updates -> {
             updates.forEach(update -> {
                 log.info(update.toString());
@@ -45,7 +55,14 @@ public class Bot implements CommandLineRunner {
 
             return UpdatesListener.CONFIRMED_UPDATES_ALL;
         });
+    }
 
-        log.info("Bot started.");
+    private void setMyCommands() {
+        BotCommand helpCommand = new BotCommand("/help", "show help message about all commands");
+        BotCommand listCommand = new BotCommand("/list", "show the links you are tracking");
+        BotCommand trackCommand = new BotCommand("/track", "start tracking the link");
+        BotCommand untrackCommand = new BotCommand("/untrack", "stop tracking the link");
+        SetMyCommands setCommands = new SetMyCommands(helpCommand, listCommand, trackCommand, untrackCommand);
+        bot.execute(setCommands);
     }
 }
