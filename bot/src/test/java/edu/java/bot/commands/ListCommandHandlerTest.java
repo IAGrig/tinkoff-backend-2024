@@ -19,14 +19,14 @@ public class ListCommandHandlerTest {
     private final String expectedSingleElementAnswer = """
         Here are all your links:
         [test]:
-            https://test.test
+            (id: 1) https://test.test
         """;
     private final String expectedDoubleElementAnswer = """
         Here are all your links:
         [test]:
-            https://test.test
+            (id: 1) https://test.test
         [testing]:
-            https://testing.test
+            (id: 2) https://testing.test
         """;
 
     @Test

@@ -28,7 +28,8 @@ public class ListCommandHandler extends CommandHandler {
         for (String domain : linksByDomains.keySet()) {
             stringBuilder.append(String.format("[%s]:\n", domain));
             for (Link link : linksByDomains.get(domain)) {
-                stringBuilder.append("    ").append(link.url()).append("\n");
+                String line = String.format("    (id: %d) %s\n", link.id(), link.url());
+                stringBuilder.append(line);
             }
         }
 
