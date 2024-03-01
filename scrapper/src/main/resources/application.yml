@@ -13,3 +13,10 @@ server:
 
 logging:
   config: classpath:log4j2-plain.xml
+
+scrapper:
+  github:
+    baseUrl: https://api.github.com
+  stackoverflow:
+    baseUrl: https://api.stackexchange.com/2.3
+    questionsPath: /questions
