@@ -6,6 +6,7 @@ import edu.java.bot.bot.commands.CommandHandler;
 import edu.java.bot.bot.commands.HelpCommandHandler;
 import edu.java.bot.bot.commands.StartCommandHandler;
 import edu.java.bot.bot.links.LinksHandler;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.jupiter.api.DisplayName;
 import org.mockito.Mockito;
@@ -16,17 +17,24 @@ public class HelpCommandHandlerTest {
     private final String expectedHelpAnswer = """
         Welcome to Link Updates Notifier. \n
         Here is list of all available commands:
+        /start - register in this bot.
         /help - show this message.
         /list - show list of tracking links.
         /track <link> - start to track <link>.
         /untrack <id> - end tracking of link with id=<id>.
         """;
+    private Database mockDatabase;
+    private LinksHandler mockLinksHandler;
+
+    @Before
+    public void setUpMocks() {
+        mockDatabase = Mockito.mock(Database.class);
+        mockLinksHandler = Mockito.mock(LinksHandler.class);
+    }
 
     @Test
     @DisplayName("/help correct test")
     public void helpCorrectTest() {
-        Database mockDatabase = Mockito.mock(Database.class);
-        LinksHandler mockLinksHandler = Mockito.mock(LinksHandler.class);
         Message mockMessage = getMockMessage("/help");
         CommandHandler handler = new HelpCommandHandler("/help", mockDatabase, mockLinksHandler);
 
@@ -38,8 +46,6 @@ public class HelpCommandHandlerTest {
     @Test
     @DisplayName("/help incorrect message test")
     public void helpIncorrectTest() {
-        Database mockDatabase = Mockito.mock(Database.class);
-        LinksHandler mockLinksHandler = Mockito.mock(LinksHandler.class);
         Message mockMessage = Mockito.mock(Message.class);
         CommandHandler handler = new HelpCommandHandler("/help", mockDatabase, mockLinksHandler);
 
@@ -51,8 +57,6 @@ public class HelpCommandHandlerTest {
     @Test
     @DisplayName("without /help test")
     public void withoutCommandTest() {
-        Database mockDatabase = Mockito.mock(Database.class);
-        LinksHandler mockLinksHandler = Mockito.mock(LinksHandler.class);
         Message mockMessage = getMockMessage("test");
         CommandHandler handler = new StartCommandHandler("/help", mockDatabase, mockLinksHandler);
 

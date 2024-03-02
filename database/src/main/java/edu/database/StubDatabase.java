@@ -4,6 +4,7 @@ import edu.database.entities.Link;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
@@ -12,7 +13,21 @@ import lombok.extern.log4j.Log4j2;
 public class StubDatabase implements Database {
     private final Map<Long, Link> linkMap;
     private final Map<Long, List<Long>> usersToLinksMap;
+    private final Set<Long> registeredUsers;
     private Long availableID = 1L;
+
+    @Override
+    public Boolean isUserRegistered(Long userID) {
+        Boolean result = registeredUsers.contains(userID);
+        log.info(String.format("User %d registration is checked: %b", userID, result));
+        return result;
+    }
+
+    @Override
+    public void registerUser(Long userID) {
+        registeredUsers.add(userID);
+        log.info("User " + userID.toString() + " has registered");
+    }
 
     @Override
     public void addLinkToUser(Long userID, Long linkID) {

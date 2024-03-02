@@ -12,9 +12,15 @@ public class StartCommandHandler extends CommandHandler {
 
     @Override
     public String executeCommand(Message message) {
-        return String.format(
-            "Welcome, %s. Try /help command to discover all functionality.",
-            message.from().firstName()
-        );
+        Long userID = message.from().id();
+        boolean isUserRegistered = database.isUserRegistered(userID);
+        if (!isUserRegistered) {
+            database.registerUser(userID);
+            return String.format(
+                "Welcome, %s. Try /help command to discover all functionality.",
+                message.from().firstName()
+            );
+        }
+        return "Sorry, you are already registered.";
     }
 }

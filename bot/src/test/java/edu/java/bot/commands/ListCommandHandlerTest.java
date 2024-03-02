@@ -8,6 +8,7 @@ import edu.java.bot.bot.commands.ListCommandHandler;
 import edu.java.bot.bot.commands.StartCommandHandler;
 import edu.java.bot.bot.links.LinksHandler;
 import java.util.List;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.jupiter.api.DisplayName;
 import org.mockito.Mockito;
@@ -28,12 +29,20 @@ public class ListCommandHandlerTest {
         [testing]:
             (id: 2) https://testing.test
         """;
+    private Database mockDatabase;
+    private LinksHandler mockLinksHandler;
+    private Message mockMessage;
+
+    @Before
+    public void setUpMocks() {
+        mockDatabase = Mockito.mock(Database.class);
+        mockLinksHandler = Mockito.mock(LinksHandler.class);
+        mockMessage = Mockito.mock(Message.class);
+    }
 
     @Test
     @DisplayName("/list correct empty list test")
     public void emptyListCorrectTest() {
-        Database mockDatabase = Mockito.mock(Database.class);
-        LinksHandler mockLinksHandler = Mockito.mock(LinksHandler.class);
         Message mockMessage = getMockMessage("/list");
         CommandHandler handler = new ListCommandHandler("/list", mockDatabase, mockLinksHandler);
 
@@ -46,8 +55,7 @@ public class ListCommandHandlerTest {
     @DisplayName("/list correct single element list test")
     public void singleElementListCorrectTest() {
         Database mockDatabase = getSingleElementMockDatabase(0L);
-        LinksHandler mockLinksHandler = Mockito.mock(LinksHandler.class);
-        Message mockMessage = getMockMessage("/list");
+        mockMessage = getMockMessage("/list");
         CommandHandler handler = new ListCommandHandler("/list", mockDatabase, mockLinksHandler);
 
         String actual = handler.handleCommand(mockMessage);
@@ -59,8 +67,7 @@ public class ListCommandHandlerTest {
     @DisplayName("/list correct multiple element list test")
     public void multipleElementsListCorrectTest() {
         Database mockDatabase = getMultipleElementMockDatabase(0L);
-        LinksHandler mockLinksHandler = Mockito.mock(LinksHandler.class);
-        Message mockMessage = getMockMessage("/list");
+        mockMessage = getMockMessage("/list");
         CommandHandler handler = new ListCommandHandler("/list", mockDatabase, mockLinksHandler);
 
         String actual = handler.handleCommand(mockMessage);
@@ -71,9 +78,6 @@ public class ListCommandHandlerTest {
     @Test
     @DisplayName("/list incorrect message test")
     public void listIncorrectTest() {
-        Database mockDatabase = Mockito.mock(Database.class);
-        LinksHandler mockLinksHandler = Mockito.mock(LinksHandler.class);
-        Message mockMessage = Mockito.mock(Message.class);
         CommandHandler handler = new ListCommandHandler("/list", mockDatabase, mockLinksHandler);
 
         String actual = handler.handleCommand(mockMessage);
@@ -84,9 +88,7 @@ public class ListCommandHandlerTest {
     @Test
     @DisplayName("without /list test")
     public void withoutCommandTest() {
-        Database mockDatabase = Mockito.mock(Database.class);
-        LinksHandler mockLinksHandler = Mockito.mock(LinksHandler.class);
-        Message mockMessage = getMockMessage("test");
+        mockMessage = getMockMessage("test");
         CommandHandler handler = new StartCommandHandler("/list", mockDatabase, mockLinksHandler);
 
         String actual = handler.handleCommand(mockMessage);
@@ -95,17 +97,15 @@ public class ListCommandHandlerTest {
     }
 
     private Database getSingleElementMockDatabase(Long userID) {
-        Database database = Mockito.mock(Database.class);
         Link link = new Link(1L, "test", "https://test.test");
-        Mockito.when(database.getAllUserLinks(userID)).thenReturn(List.of(link));
-        return database;
+        Mockito.when(mockDatabase.getAllUserLinks(userID)).thenReturn(List.of(link));
+        return mockDatabase;
     }
 
     private Database getMultipleElementMockDatabase(Long userID) {
-        Database database = Mockito.mock(Database.class);
         Link link1 = new Link(1L, "test", "https://test.test");
         Link link2 = new Link(2L, "testing", "https://testing.test");
-        Mockito.when(database.getAllUserLinks(userID)).thenReturn(List.of(link1, link2));
-        return database;
+        Mockito.when(mockDatabase.getAllUserLinks(userID)).thenReturn(List.of(link1, link2));
+        return mockDatabase;
     }
 }

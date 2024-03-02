@@ -1,5 +1,6 @@
 package edu.java.bot.bot.links;
 
+import java.net.URI;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
@@ -13,9 +14,11 @@ public class LinksHandler {
 
     public String validateURLAndGetDomain(String url) {
         String[] allowedDomains = env.getProperty("app.allowed-domains", "").split(",");
+        URI uri = URI.create(url);
+        String host = uri.getHost();
+
         for (String domain : allowedDomains) {
-            String regex = BEFORE_DOMAIN_URL_PATTERN + domain + AFTER_DOMAIN_URL_PATTERN;
-            if (url.toLowerCase().matches(regex)) {
+            if (domain.equalsIgnoreCase(host)) {
                 return domain;
             }
         }

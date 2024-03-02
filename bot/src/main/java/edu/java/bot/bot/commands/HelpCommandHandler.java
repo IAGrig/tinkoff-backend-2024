@@ -8,6 +8,7 @@ public class HelpCommandHandler extends CommandHandler {
     private final static String HELP_MESSAGE = """
         Welcome to Link Updates Notifier. \n
         Here is list of all available commands:
+        /start - register in this bot.
         /help - show this message.
         /list - show list of tracking links.
         /track <link> - start to track <link>.

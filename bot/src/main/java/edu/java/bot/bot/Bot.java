@@ -10,6 +10,7 @@ import edu.database.StubDatabase;
 import edu.java.bot.bot.commands.CommandsManager;
 import edu.java.bot.bot.links.LinksHandler;
 import java.util.HashMap;
+import java.util.HashSet;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -20,24 +21,19 @@ import org.springframework.stereotype.Component;
 @Component
 @Log4j2
 public class Bot implements CommandLineRunner {
-
-    private final Environment env;
-    private final LinksHandler linksHandler;
     private final Database database;
     private final CommandsManager commandsManager;
     private final TelegramBot bot;
 
     @Autowired
     public Bot(Environment env, LinksHandler linksHandler) {
-        this.env = env;
-        this.linksHandler = linksHandler;
-        this.database = new StubDatabase(new HashMap<>(), new HashMap<>());
+        this.database = new StubDatabase(new HashMap<>(), new HashMap<>(), new HashSet<>());
         this.commandsManager = new CommandsManager(database, linksHandler);
         this.bot = new TelegramBot(env.getProperty("telegram_api_key"));
     }
 
     @Override
-    public void run(String... args) throws Exception {
+    public void run(String... args) {
         setUpdatesListener();
         setMyCommands();
 
@@ -58,11 +54,13 @@ public class Bot implements CommandLineRunner {
     }
 
     private void setMyCommands() {
+        BotCommand startCommand = new BotCommand("/start", "register in this bot");
         BotCommand helpCommand = new BotCommand("/help", "show help message about all commands");
         BotCommand listCommand = new BotCommand("/list", "show the links you are tracking");
         BotCommand trackCommand = new BotCommand("/track", "start tracking the link");
         BotCommand untrackCommand = new BotCommand("/untrack", "stop tracking the link");
-        SetMyCommands setCommands = new SetMyCommands(helpCommand, listCommand, trackCommand, untrackCommand);
+        SetMyCommands setCommands =
+            new SetMyCommands(startCommand, helpCommand, listCommand, trackCommand, untrackCommand);
         bot.execute(setCommands);
     }
 }

@@ -5,6 +5,7 @@ import edu.database.Database;
 import edu.java.bot.bot.commands.CommandHandler;
 import edu.java.bot.bot.commands.StartCommandHandler;
 import edu.java.bot.bot.links.LinksHandler;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.jupiter.api.DisplayName;
 import org.mockito.Mockito;
@@ -13,13 +14,21 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 public class StartCommandHandlerTest {
     private final String expectedStartAnswer = "Welcome, TESTER. Try /help command to discover all functionality.";
+    private Database mockDatabase;
+    private LinksHandler mockLinksHandler;
+    private Message mockMessage;
+
+    @Before
+    public void setUpMocks() {
+        mockDatabase = Mockito.mock(Database.class);
+        mockLinksHandler = Mockito.mock(LinksHandler.class);
+        mockMessage = Mockito.mock(Message.class);
+    }
 
     @Test
     @DisplayName("/start correct test")
     public void startCorrectTest() {
-        Database mockDatabase = Mockito.mock(Database.class);
-        LinksHandler mockLinksHandler = Mockito.mock(LinksHandler.class);
-        Message mockMessage = getMockMessage("/start");
+        mockMessage = getMockMessage("/start");
         CommandHandler handler = new StartCommandHandler("/start", mockDatabase, mockLinksHandler);
 
         String actual = handler.handleCommand(mockMessage);
@@ -30,9 +39,6 @@ public class StartCommandHandlerTest {
     @Test
     @DisplayName("/start incorrect message test")
     public void startIncorrectTest() {
-        Database mockDatabase = Mockito.mock(Database.class);
-        LinksHandler mockLinksHandler = Mockito.mock(LinksHandler.class);
-        Message mockMessage = Mockito.mock(Message.class);
         CommandHandler handler = new StartCommandHandler("/start", mockDatabase, mockLinksHandler);
 
         String actual = handler.handleCommand(mockMessage);
@@ -43,9 +49,7 @@ public class StartCommandHandlerTest {
     @Test
     @DisplayName("without /start test")
     public void withoutCommandTest() {
-        Database mockDatabase = Mockito.mock(Database.class);
-        LinksHandler mockLinksHandler = Mockito.mock(LinksHandler.class);
-        Message mockMessage = getMockMessage("test");
+        mockMessage = getMockMessage("test");
         CommandHandler handler = new StartCommandHandler("/start", mockDatabase, mockLinksHandler);
 
         String actual = handler.handleCommand(mockMessage);

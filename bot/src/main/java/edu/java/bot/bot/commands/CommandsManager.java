@@ -5,14 +5,9 @@ import edu.database.Database;
 import edu.java.bot.bot.links.LinksHandler;
 
 public class CommandsManager {
-    private final LinksHandler linksHandler;
     private final CommandHandler firstHandler;
-    private final Database database;
 
     public CommandsManager(Database database, LinksHandler linksHandler) {
-        this.database = database;
-        this.linksHandler = linksHandler;
-
         CommandHandler start = new StartCommandHandler("/start", database, linksHandler);
         CommandHandler help = new HelpCommandHandler("/help", database, linksHandler);
         CommandHandler track = new TrackCommandHandler("/track", database, linksHandler);
