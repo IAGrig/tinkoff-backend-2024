@@ -8,9 +8,9 @@ import edu.java.bot.bot.commands.ListCommandHandler;
 import edu.java.bot.bot.commands.StartCommandHandler;
 import edu.java.bot.bot.links.LinksHandler;
 import java.util.List;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import static edu.java.bot.commands.CommandsTestUtils.getMockMessage;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -33,7 +33,7 @@ public class ListCommandHandlerTest {
     private LinksHandler mockLinksHandler;
     private Message mockMessage;
 
-    @Before
+    @BeforeEach
     public void setUpMocks() {
         mockDatabase = Mockito.mock(Database.class);
         mockLinksHandler = Mockito.mock(LinksHandler.class);

@@ -1,9 +1,9 @@
 package edu.java.bot.links;
 
 import edu.java.bot.bot.links.LinksHandler;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.core.env.Environment;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -12,7 +12,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 public class LinksHandlerTest {
     private Environment env;
 
-    @Before
+    @BeforeEach
     public void setUpMocks() {
         env = Mockito.mock(Environment.class);
     }

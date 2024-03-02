@@ -6,9 +6,9 @@ import edu.java.bot.bot.commands.CommandHandler;
 import edu.java.bot.bot.commands.HelpCommandHandler;
 import edu.java.bot.bot.commands.StartCommandHandler;
 import edu.java.bot.bot.links.LinksHandler;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import static edu.java.bot.commands.CommandsTestUtils.getMockMessage;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -26,7 +26,7 @@ public class HelpCommandHandlerTest {
     private Database mockDatabase;
     private LinksHandler mockLinksHandler;
 
-    @Before
+    @BeforeEach
     public void setUpMocks() {
         mockDatabase = Mockito.mock(Database.class);
         mockLinksHandler = Mockito.mock(LinksHandler.class);
