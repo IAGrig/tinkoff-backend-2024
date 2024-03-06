@@ -4,29 +4,18 @@ import edu.java.scrapper.HttpClient;
 import edu.java.scrapper.dto.stackoverflow.StackoverflowQuestionUpdatesResponse;
 import java.net.URI;
 import java.util.List;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.util.UriBuilder;
 
-@Component
 public class StackoverflowHttpClient implements HttpClient {
     private final WebClient client;
-    @Value("${scrapper.stackoverflow.baseUrl}")
-    private String baseUrlDefault;
-    @Value("${scrapper.stackoverflow.questionsPath}")
-    private String questionsPath;
+    private final String baseUrlDefault;
+    private final String questionsPath;
 
-    public StackoverflowHttpClient(String baseUrl) {
-        client = WebClient.builder()
-            .baseUrl(baseUrl)
-            .build();
-    }
-
-    public StackoverflowHttpClient() {
-        client = WebClient.builder()
-            .baseUrl(baseUrlDefault)
-            .build();
+    public StackoverflowHttpClient(WebClient client, String baseUrlDefault, String questionsPath) {
+        this.client = client;
+        this.baseUrlDefault = baseUrlDefault;
+        this.questionsPath = questionsPath;
     }
 
     @Override
@@ -45,6 +34,7 @@ public class StackoverflowHttpClient implements HttpClient {
             .uri(uriBuilder -> getUri(uriBuilder, questionsPath, idsList))
             .retrieve()
             .bodyToMono(StackoverflowQuestionUpdatesResponse.class)
+            .onErrorReturn(StackoverflowQuestionUpdatesResponse.getEmpty())
             .block();
     }
 

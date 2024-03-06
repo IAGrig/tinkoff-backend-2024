@@ -2,22 +2,15 @@ package edu.java.scrapper.github;
 
 import edu.java.scrapper.HttpClient;
 import edu.java.scrapper.dto.github.GithubRepositoryResponse;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
-@Component
 public class GithubHttpClient implements HttpClient {
     private final WebClient client;
-    @Value("${scrapper.github.baseUrl}")
-    private String baseUrlDefault;
+    private final String baseUrlDefault;
 
-    public GithubHttpClient(String baseUrl) {
-        client = getWebClientWithBaseUrl(baseUrl);
-    }
-
-    public GithubHttpClient() {
-        client = getWebClientWithBaseUrl(baseUrlDefault);
+    public GithubHttpClient(WebClient client, String baseUrlDefault) {
+        this.client = client;
+        this.baseUrlDefault = baseUrlDefault;
     }
 
     @Override
@@ -42,14 +35,7 @@ public class GithubHttpClient implements HttpClient {
                 .build())
             .retrieve()
             .bodyToMono(GithubRepositoryResponse.class)
+            .onErrorReturn(GithubRepositoryResponse.getEmptyResponse())
             .block();
-    }
-
-    private WebClient getWebClientWithBaseUrl(String baseUrl) {
-        return WebClient.builder()
-            .baseUrl(baseUrl)
-            .defaultHeader("Accept", "application/vnd.github+json")
-            .defaultHeader("X-GitHub-Api-Version", "2022-11-28")
-            .build();
     }
 }
