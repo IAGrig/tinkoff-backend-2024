@@ -1,15 +1,17 @@
 package edu.java.scrapper;
 
+import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
-import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import edu.java.scrapper.stackoverflow.StackoverflowHttpClient;
 import java.util.List;
-import lombok.NoArgsConstructor;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.reactive.function.client.WebClient;
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
@@ -17,16 +19,30 @@ import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @WireMockTest
-@NoArgsConstructor
 public class StackoverflowHttpClientTest {
-    @Rule
-    public WireMockRule wireMockRule = new WireMockRule(8089);
+    private WebClient webClient;
     private StackoverflowHttpClient client;
+    private WireMockServer wireMockServer;
 
-    @Before
+    @BeforeEach
     public void setUp() {
-        String baseUrl = wireMockRule.baseUrl();
-        client = new StackoverflowHttpClient(baseUrl);
+        wireMockServer = new WireMockServer(8092);
+        wireMockServer.start();
+
+        WireMock.configureFor("localhost", 8092);
+
+        webClient = WebClient.builder()
+            .baseUrl("http://localhost:8092")
+            .build();
+
+        client = new StackoverflowHttpClient(webClient,
+            "http://localhost:8092",
+            "/questions");
+    }
+
+    @AfterEach
+    public void cleanUp() {
+        wireMockServer.stop();
     }
 
     @Test
@@ -88,5 +104,15 @@ public class StackoverflowHttpClientTest {
         assertThat(res.getItems().get(0).getLastActivity()).isEqualTo("2020-05-25T10:02:32Z");
         assertThat(res.getItems().get(1).getQuestionId()).isEqualTo(7555000L);
         assertThat(res.getItems().get(1).getLastActivity()).isEqualTo("1970-03-29T10:36:40Z");
+    }
+
+    @Configuration
+    static class TestConfiguration {
+        @Bean
+        public WebClient webClient() {
+            return WebClient.builder()
+                .baseUrl("http://localhost:8092")
+                .build();
+        }
     }
 }

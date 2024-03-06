@@ -1,29 +1,41 @@
 package edu.java.scrapper;
 
+import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
-import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import edu.java.scrapper.github.GithubHttpClient;
-import lombok.NoArgsConstructor;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.web.reactive.function.client.WebClient;
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @WireMockTest
-@NoArgsConstructor
 public class GithubHttpClientTest {
-    @Rule
-    public WireMockRule wireMockRule = new WireMockRule(8089);
     private GithubHttpClient client;
+    private WebClient webClient;
+    private WireMockServer wireMockServer;
 
-    @Before
+    @BeforeEach
     public void setUp() {
-        String baseUrl = wireMockRule.baseUrl();
-        client = new GithubHttpClient(baseUrl);
+        wireMockServer = new WireMockServer(8092);
+        wireMockServer.start();
+
+        WireMock.configureFor("localhost", 8092);
+
+        webClient = WebClient.builder()
+            .baseUrl("http://localhost:8092")
+            .build();
+
+        client = new GithubHttpClient(webClient, "http://localhost:8092");
+    }
+
+    @AfterEach
+    public void cleanUp() {
+        wireMockServer.stop();
     }
 
     @Test
