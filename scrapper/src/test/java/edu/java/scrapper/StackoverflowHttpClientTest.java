@@ -35,9 +35,11 @@ public class StackoverflowHttpClientTest {
             .baseUrl("http://localhost:8092")
             .build();
 
-        client = new StackoverflowHttpClient(webClient,
+        client = new StackoverflowHttpClient(
+            webClient,
             "http://localhost:8092",
-            "/questions");
+            "/questions"
+        );
     }
 
     @AfterEach

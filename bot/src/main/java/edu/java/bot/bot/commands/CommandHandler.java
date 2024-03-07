@@ -39,10 +39,7 @@ public abstract class CommandHandler {
         if (message.chat() == null) {
             return false;
         }
-        if (message.from() == null) {
-            return false;
-        }
-        return true;
+        return message.from() != null;
     }
 
     public abstract String executeCommand(Message message);
