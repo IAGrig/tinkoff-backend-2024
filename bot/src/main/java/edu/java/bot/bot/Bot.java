@@ -40,6 +40,10 @@ public class Bot implements CommandLineRunner {
         log.info("Bot started.");
     }
 
+    public void sendMessage(Long chatId, String message) {
+        bot.execute(new SendMessage(chatId, message));
+    }
+
     private void setUpdatesListener() {
         bot.setUpdatesListener(updates -> {
             updates.forEach(update -> {
