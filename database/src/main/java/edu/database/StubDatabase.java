@@ -4,6 +4,7 @@ import edu.database.entities.Link;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -26,7 +27,13 @@ public class StubDatabase implements Database {
     @Override
     public void registerUser(Long userID) {
         registeredUsers.add(userID);
-        log.info("User " + userID.toString() + " has registered");
+        log.info("User %s has registered".formatted(userID.toString()));
+    }
+
+    @Override
+    public void deleteUser(Long userID) {
+        registeredUsers.remove(userID);
+        log.info("User %s has removed".formatted(userID.toString()));
     }
 
     @Override
@@ -48,6 +55,19 @@ public class StubDatabase implements Database {
     }
 
     @Override
+    public void removeLinkFromUser(Long userID, String url) {
+        if (!usersToLinksMap.containsKey(userID)) {
+            usersToLinksMap.put(userID, new ArrayList<>());
+        }
+        Long linkID = getLinkIdByUrl(url);
+        if (linkID == null) {
+            throw new NoSuchElementException("The link with the specified url was not found.");
+        }
+        usersToLinksMap.get(userID).remove(linkID);
+        log.info(String.format("Link %s removed from user %d", url, userID));
+    }
+
+    @Override
     public Long createLink(String domain, String url) {
         Link link = new Link(availableID, domain, url);
         linkMap.put(availableID, link);
@@ -65,5 +85,15 @@ public class StubDatabase implements Database {
             .toList();
         log.info(String.format("Got links for user %d", userID));
         return result;
+    }
+
+    private Long getLinkIdByUrl(String url) {
+        List<Link> linksWithUrl = linkMap.values().stream()
+            .filter(link -> link.url().equals(url))
+            .toList();
+        if (linksWithUrl.isEmpty()) {
+            return null;
+        }
+        return linksWithUrl.getFirst().id();
     }
 }
