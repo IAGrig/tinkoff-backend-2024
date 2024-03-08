@@ -6,7 +6,6 @@ import edu.java.dto.AddLinkRequest;
 import edu.java.dto.LinkResponse;
 import edu.java.dto.ListLinksResponse;
 import edu.java.dto.RemoveLinkRequest;
-import java.net.URI;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -22,20 +21,23 @@ public class LinkService {
         return new ListLinksResponse().links(linkResponses).size(linkResponses.size());
     }
 
-    public void addLinkTracking(Long userId, AddLinkRequest request) {
+    public LinkResponse addLinkTracking(Long userId, AddLinkRequest request) {
         String domain;
         try {
-            domain = URI.create(request.getLink()).getHost();
+            domain = request.getLink().getHost();
         } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException("Link parsing error: %s".formatted(e.getMessage()));
         }
 
-        Long newLinkId = database.createLink(domain, request.getLink());
+        Long newLinkId = database.createLink(domain, request.getLink().toString());
         database.addLinkToUser(userId, newLinkId);
+        return new LinkResponse().id(newLinkId).url(request.getLink());
     }
 
-    public void deleteLinkTracking(Long userId, RemoveLinkRequest request) {
-        database.removeLinkFromUser(userId, request.getLink());
+    public LinkResponse deleteLinkTracking(Long userId, RemoveLinkRequest request) {
+        Link link = database.getUserLink(userId, request.getLink().toString());
+        database.removeLinkFromUser(userId, request.getLink().toString());
+        return new LinkResponse().id(link.id()).url(link.url());
     }
 
     private LinkResponse linkToLinkResponse(Link link) {

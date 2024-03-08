@@ -1,6 +1,7 @@
 package edu.java.controllers;
 
 import edu.java.dto.AddLinkRequest;
+import edu.java.dto.LinkResponse;
 import edu.java.dto.ListLinksResponse;
 import edu.java.dto.RemoveLinkRequest;
 import edu.java.services.LinkService;
@@ -44,20 +45,20 @@ public class ScrapperController {
     }
 
     @PostMapping(path = "/links")
-    public ResponseEntity<String> addLinkTracking(
+    public ResponseEntity<LinkResponse> addLinkTracking(
         @Positive @RequestHeader("Tg-Chat-Id") Long chatId,
         @Valid @RequestBody AddLinkRequest request
     ) {
-        linkService.addLinkTracking(chatId, request);
-        return ResponseEntity.ok("Ссылка успешно добавлена");
+        LinkResponse response = linkService.addLinkTracking(chatId, request);
+        return ResponseEntity.ok(response);
     }
 
     @DeleteMapping(path = "/links")
-    public ResponseEntity<String> deleteLinkTracking(
+    public ResponseEntity<LinkResponse> deleteLinkTracking(
         @Positive @RequestHeader("Tg-Chat-Id") Long chatId,
         @Valid @RequestBody RemoveLinkRequest request
     ) {
-        linkService.deleteLinkTracking(chatId, request);
-        return ResponseEntity.ok("Ссылка успешно убрана");
+        LinkResponse response = linkService.deleteLinkTracking(chatId, request);
+        return ResponseEntity.ok(response);
     }
 }

@@ -1,10 +1,11 @@
 package edu.database;
 
 import edu.database.entities.Link;
+import edu.database.exceptions.LinkNotFoundException;
+import edu.database.exceptions.UserNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.NoSuchElementException;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -59,12 +60,13 @@ public class StubDatabase implements Database {
         if (!usersToLinksMap.containsKey(userID)) {
             usersToLinksMap.put(userID, new ArrayList<>());
         }
-        Long linkID = getLinkIdByUrl(url);
-        if (linkID == null) {
-            throw new NoSuchElementException("The link with the specified url was not found.");
+        Link link = getLinkByUrl(url);
+        if (link == null) {
+            throw new LinkNotFoundException("The link with the specified url was not found.");
         }
-        usersToLinksMap.get(userID).remove(linkID);
+        usersToLinksMap.get(userID).remove(link.id());
         log.info(String.format("Link %s removed from user %d", url, userID));
+
     }
 
     @Override
@@ -73,6 +75,18 @@ public class StubDatabase implements Database {
         linkMap.put(availableID, link);
         log.info(String.format("Created link with id=%d and URL=%s", availableID, url));
         return availableID++;
+    }
+
+    @Override
+    public Link getUserLink(Long userID, String url) {
+        if (!registeredUsers.contains(userID)) {
+            throw new UserNotFoundException("The user was not found");
+        }
+        Link link = getLinkByUrl(url);
+        if (link == null) {
+            throw new LinkNotFoundException("The link was not found");
+        }
+        return link;
     }
 
     @Override
@@ -87,13 +101,13 @@ public class StubDatabase implements Database {
         return result;
     }
 
-    private Long getLinkIdByUrl(String url) {
+    private Link getLinkByUrl(String url) {
         List<Link> linksWithUrl = linkMap.values().stream()
             .filter(link -> link.url().equals(url))
             .toList();
         if (linksWithUrl.isEmpty()) {
             return null;
         }
-        return linksWithUrl.getFirst().id();
+        return linksWithUrl.getFirst();
     }
 }

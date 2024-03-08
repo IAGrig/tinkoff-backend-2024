@@ -18,5 +18,7 @@ public interface Database {
 
     Long createLink(String domain, String url);
 
+    Link getUserLink(Long userID, String url);
+
     List<Link> getAllUserLinks(Long userID);
 }
