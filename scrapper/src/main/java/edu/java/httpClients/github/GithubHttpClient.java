@@ -1,7 +1,7 @@
-package edu.java.scrapper.github;
+package edu.java.httpClients.github;
 
-import edu.java.scrapper.HttpClient;
-import edu.java.scrapper.dto.github.GithubRepositoryResponse;
+import edu.java.httpClients.HttpClient;
+import edu.java.httpClients.dto.github.GithubRepositoryResponse;
 import org.springframework.web.reactive.function.client.WebClient;
 
 public class GithubHttpClient implements HttpClient {

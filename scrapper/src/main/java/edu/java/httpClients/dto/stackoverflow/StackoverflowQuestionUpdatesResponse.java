@@ -1,7 +1,7 @@
-package edu.java.scrapper.dto.stackoverflow;
+package edu.java.httpClients.dto.stackoverflow;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import edu.java.scrapper.dto.Response;
+import edu.java.httpClients.dto.Response;
 import java.util.List;
 import lombok.Getter;
 

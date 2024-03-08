@@ -1,7 +1,7 @@
-package edu.java.scrapper.stackoverflow;
+package edu.java.httpClients.stackoverflow;
 
-import edu.java.scrapper.HttpClient;
-import edu.java.scrapper.dto.stackoverflow.StackoverflowQuestionUpdatesResponse;
+import edu.java.httpClients.HttpClient;
+import edu.java.httpClients.dto.stackoverflow.StackoverflowQuestionUpdatesResponse;
 import java.net.URI;
 import java.util.List;
 import org.springframework.web.reactive.function.client.WebClient;

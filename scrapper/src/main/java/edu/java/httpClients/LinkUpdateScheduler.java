@@ -1,4 +1,4 @@
-package edu.java.scrapper;
+package edu.java.httpClients;
 
 import lombok.extern.log4j.Log4j2;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;

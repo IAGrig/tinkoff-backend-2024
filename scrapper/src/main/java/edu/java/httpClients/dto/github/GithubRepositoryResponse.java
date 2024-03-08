@@ -1,7 +1,7 @@
-package edu.java.scrapper.dto.github;
+package edu.java.httpClients.dto.github;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import edu.java.scrapper.dto.Response;
+import edu.java.httpClients.dto.Response;
 import java.time.OffsetDateTime;
 import lombok.Getter;
 

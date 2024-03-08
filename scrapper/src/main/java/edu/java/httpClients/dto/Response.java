@@ -1,4 +1,4 @@
-package edu.java.scrapper.dto;
+package edu.java.httpClients.dto;
 
 public abstract class Response {
 }

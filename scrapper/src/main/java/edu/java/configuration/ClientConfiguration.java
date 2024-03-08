@@ -1,8 +1,8 @@
 package edu.java.configuration;
 
-import edu.java.scrapper.HttpClient;
-import edu.java.scrapper.github.GithubHttpClient;
-import edu.java.scrapper.stackoverflow.StackoverflowHttpClient;
+import edu.java.httpClients.HttpClient;
+import edu.java.httpClients.github.GithubHttpClient;
+import edu.java.httpClients.stackoverflow.StackoverflowHttpClient;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

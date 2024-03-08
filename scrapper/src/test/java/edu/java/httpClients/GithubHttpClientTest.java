@@ -1,9 +1,9 @@
-package edu.java.scrapper;
+package edu.java.httpClients;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
-import edu.java.scrapper.github.GithubHttpClient;
+import edu.java.httpClients.github.GithubHttpClient;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
