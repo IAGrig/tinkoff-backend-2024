@@ -135,6 +135,11 @@
             <artifactId>database</artifactId>
             <version>${revision}</version>
         </dependency>
+        <dependency>
+            <groupId>edu.models</groupId>
+            <artifactId>models</artifactId>
+            <version>${revision}</version>
+        </dependency>
     </dependencies>
 
     <build>
