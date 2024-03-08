@@ -1,8 +1,9 @@
 package edu.java.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.validation.constraints.NotBlank;
+import edu.java.validators.ValidUri;
 import jakarta.validation.constraints.Positive;
+import java.net.URI;
 import lombok.Data;
 import org.springframework.validation.annotation.Validated;
 
@@ -14,8 +15,8 @@ public class LinkResponse {
     private Long id;
 
     @JsonProperty("url")
-    @NotBlank
-    private String url;
+    @ValidUri
+    private URI url;
 
     public LinkResponse id(Long id) {
         this.id = id;
@@ -23,6 +24,11 @@ public class LinkResponse {
     }
 
     public LinkResponse url(String url) {
+        this.url = URI.create(url);
+        return this;
+    }
+
+    public LinkResponse url(URI url) {
         this.url = url;
         return this;
     }

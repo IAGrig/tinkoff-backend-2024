@@ -1,9 +1,10 @@
-package edu.java.bot.dto;
+package edu.java.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.validation.constraints.NotEmpty;
+import edu.java.validators.ValidUri;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Data;
@@ -17,8 +18,8 @@ public class LinkUpdateRequest {
     private Long id;
 
     @JsonProperty("url")
-    @NotEmpty
-    private String url;
+    @ValidUri
+    private URI url;
 
     @JsonProperty("description")
     private String description;
@@ -33,6 +34,11 @@ public class LinkUpdateRequest {
     }
 
     public LinkUpdateRequest url(String url) {
+        this.url = URI.create(url);
+        return this;
+    }
+
+    public LinkUpdateRequest url(URI url) {
         this.url = url;
         return this;
     }

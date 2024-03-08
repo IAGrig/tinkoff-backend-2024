@@ -1,7 +1,8 @@
 package edu.java.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.validation.constraints.NotBlank;
+import edu.java.validators.ValidUri;
+import java.net.URI;
 import lombok.Data;
 import org.springframework.validation.annotation.Validated;
 
@@ -9,10 +10,15 @@ import org.springframework.validation.annotation.Validated;
 @Data
 public class AddLinkRequest {
     @JsonProperty("link")
-    @NotBlank
-    private String link;
+    @ValidUri
+    private URI link;
 
     public AddLinkRequest link(String link) {
+        this.link = URI.create(link);
+        return this;
+    }
+
+    public AddLinkRequest link(URI link) {
         this.link = link;
         return this;
     }
