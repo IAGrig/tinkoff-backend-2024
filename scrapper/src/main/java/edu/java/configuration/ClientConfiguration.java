@@ -19,12 +19,12 @@ public class ClientConfiguration {
     @Value("${scrapper.github.baseUrl:https://api.github.com}")
     private String baseGithubUrlDefault;
 
-    @Bean(name = "githubHttpClient")
+    @Bean
     public HttpClient githubHttpClient(WebClient githubWebClient) {
         return new GithubHttpClient(githubWebClient, baseGithubUrlDefault);
     }
 
-    @Bean(name = "stackoverflowHttpClient")
+    @Bean
     public HttpClient stackoverflowHttpClient(WebClient stackoverflowWebClient) {
         return new StackoverflowHttpClient(
             stackoverflowWebClient,
