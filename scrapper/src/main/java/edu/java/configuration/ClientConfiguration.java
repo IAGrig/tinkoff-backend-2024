@@ -3,7 +3,6 @@ package edu.java.configuration;
 import edu.java.scrapper.HttpClient;
 import edu.java.scrapper.github.GithubHttpClient;
 import edu.java.scrapper.stackoverflow.StackoverflowHttpClient;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,14 +19,12 @@ public class ClientConfiguration {
     @Value("${scrapper.github.baseUrl:https://api.github.com}")
     private String baseGithubUrlDefault;
 
-    @Bean
-    @Qualifier("githubHttpClient")
+    @Bean(name = "githubHttpClient")
     public HttpClient githubHttpClient(WebClient githubWebClient) {
         return new GithubHttpClient(githubWebClient, baseGithubUrlDefault);
     }
 
-    @Bean
-    @Qualifier("stackoverflowHttpClient")
+    @Bean(name = "stackoverflowHttpClient")
     public HttpClient stackoverflowHttpClient(WebClient stackoverflowWebClient) {
         return new StackoverflowHttpClient(
             stackoverflowWebClient,
