@@ -1,6 +1,5 @@
 package edu.java.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,21 +9,16 @@ import org.springframework.validation.annotation.Validated;
 @Validated
 @Data
 public class ApiErrorResponse {
-    @JsonProperty("description")
     private String description;
 
-    @JsonProperty("code")
     @NotBlank
     private String code;
 
-    @JsonProperty("exceptionName")
     @NotBlank
     private String exceptionName;
 
-    @JsonProperty("exceptionMessage")
     private String exceptionMessage;
 
-    @JsonProperty("stacktrace")
     private List<String> stacktrace;
 
     public ApiErrorResponse description(String description) {

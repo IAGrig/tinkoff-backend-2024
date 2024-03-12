@@ -1,6 +1,5 @@
 package edu.java.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import edu.java.validators.ValidUri;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -13,18 +12,14 @@ import org.springframework.validation.annotation.Validated;
 @Data
 @Validated
 public class LinkUpdateRequest {
-    @JsonProperty("id")
     @Positive
     private Long id;
 
-    @JsonProperty("url")
     @ValidUri
     private URI url;
 
-    @JsonProperty("description")
     private String description;
 
-    @JsonProperty("tgChatIds")
     @NotNull
     private List<Long> tgChatIds;
 

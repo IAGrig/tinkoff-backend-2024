@@ -1,6 +1,5 @@
 package edu.java.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
 import java.util.ArrayList;
@@ -11,11 +10,9 @@ import org.springframework.validation.annotation.Validated;
 @Validated
 @Data
 public class ListLinksResponse {
-    @JsonProperty("links")
     @NotNull
     private List<LinkResponse> links;
 
-    @JsonProperty("size")
     @PositiveOrZero
     private Integer size;
 
