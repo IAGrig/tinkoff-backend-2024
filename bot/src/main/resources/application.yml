@@ -11,6 +11,13 @@ spring:
 server:
   port: 8090
 
+clients:
+  scrapper:
+    baseUrl: http://localhost:8080
+    tgChatPath: /tg-chat
+    linksPath: /links
+    chatIdHeader: Tg-Chat-Id
+
 logging:
   config: classpath:log4j2-plain.xml
 

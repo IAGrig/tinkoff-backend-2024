@@ -5,20 +5,24 @@ import edu.java.dto.ApiErrorResponse;
 import edu.java.dto.LinkResponse;
 import edu.java.dto.ListLinksResponse;
 import edu.java.exceptions.ApiException;
-import lombok.AllArgsConstructor;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
-@AllArgsConstructor
 public class ScrapperHttpClient {
     private final WebClient client;
-    private final String baseUrl;
-    private final String chatsPath = "/tg-chat";
-    private final String linksPath = "/links";
-    private final String chatIdHeader = "Tg-Chat-Id";
+    private final String chatsPath;
+    private final String linksPath;
+    private final String chatIdHeader;
+
+    public ScrapperHttpClient(WebClient client, String chatsPath, String linksPath, String chatIdHeader) {
+        this.client = client;
+        this.chatsPath = chatsPath;
+        this.linksPath = linksPath;
+        this.chatIdHeader = chatIdHeader;
+    }
 
     public String registerChat(Long id) {
         return client.post()

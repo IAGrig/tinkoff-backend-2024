@@ -1,5 +1,6 @@
 package edu.java.configuration;
 
+import edu.java.httpClients.BotHttpClient;
 import edu.java.httpClients.HttpClient;
 import edu.java.httpClients.github.GithubHttpClient;
 import edu.java.httpClients.stackoverflow.StackoverflowHttpClient;
@@ -20,6 +21,12 @@ public class ClientConfiguration {
     @Value("${scrapper.github.baseUrl:https://api.github.com}")
     private String baseGithubUrlDefault;
 
+    @Value("${clients.bot.baseUrl:http://localhost:8090}")
+    private String baseBotUrlDefault;
+
+    @Value("${clients.bot.updatesPath:/updates}")
+    private String botUpdatesPath;
+
     @Bean
     @Qualifier("githubHttpClient")
     public HttpClient githubHttpClient(WebClient githubWebClient) {
@@ -37,6 +44,11 @@ public class ClientConfiguration {
     }
 
     @Bean
+    public BotHttpClient botHttpClient(WebClient botWebClient) {
+        return new BotHttpClient(botWebClient, botUpdatesPath);
+    }
+
+    @Bean
     public WebClient githubWebClient() {
         return WebClient.builder()
             .baseUrl(baseGithubUrlDefault)
@@ -49,6 +61,13 @@ public class ClientConfiguration {
     public WebClient stackoverflowWebClient() {
         return WebClient.builder()
             .baseUrl(baseStackoverflowUrlDefault)
+            .build();
+    }
+
+    @Bean
+    public WebClient botWebClient() {
+        return WebClient.builder()
+            .baseUrl(baseBotUrlDefault)
             .build();
     }
 }

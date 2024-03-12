@@ -21,7 +21,12 @@ scrapper:
     baseUrl: https://api.stackexchange.com/2.3
     questionsPath: /questions
 
+clients:
+  bot:
+    baseUrl: http://localhost:8090
+    updatesPath: /updates
+
 springdoc:
   swagger-ui:
     path: /swagger-ui
-    
+
