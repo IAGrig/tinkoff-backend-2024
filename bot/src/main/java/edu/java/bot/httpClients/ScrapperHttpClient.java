@@ -4,6 +4,7 @@ import edu.java.dto.AddLinkRequest;
 import edu.java.dto.ApiErrorResponse;
 import edu.java.dto.LinkResponse;
 import edu.java.dto.ListLinksResponse;
+import edu.java.dto.RemoveLinkRequest;
 import edu.java.exceptions.ApiException;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -87,10 +88,11 @@ public class ScrapperHttpClient {
     }
 
     public LinkResponse untrackLink(Long tgChatId, String link) {
+        RemoveLinkRequest request = new RemoveLinkRequest().link(link);
         return client.method(HttpMethod.DELETE)
             .uri(linksPath)
             .header(chatIdHeader, tgChatId.toString())
-            .body(BodyInserters.fromValue(link))
+            .body(BodyInserters.fromValue(request))
             .retrieve()
             .onStatus(
                 HttpStatus.BAD_REQUEST::equals,
