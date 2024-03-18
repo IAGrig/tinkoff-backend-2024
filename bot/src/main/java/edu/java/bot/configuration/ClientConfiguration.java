@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.client.WebClient;
 
-@Configuration
+@Configuration("botClientConfiguration")
 public class ClientConfiguration {
     @Value("${clients.scrapper.baseUrl:http://localhost:8080}")
     private String baseScrapperUrlDefault;

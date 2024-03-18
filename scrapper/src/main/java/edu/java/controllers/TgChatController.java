@@ -2,7 +2,8 @@ package edu.java.controllers;
 
 import edu.java.services.UserService;
 import jakarta.validation.constraints.Positive;
-import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -10,11 +11,15 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@AllArgsConstructor
 @RestController
 @RequestMapping(path = "/tg-chat")
 public class TgChatController {
-    private UserService userService;
+    private final UserService userService;
+
+    @Autowired
+    public TgChatController(@Qualifier("jdbcUserService") UserService userService) {
+        this.userService = userService;
+    }
 
     @PostMapping("/{id}")
     public ResponseEntity<String> registerChat(@PathVariable("id") @Positive Long chatId) {

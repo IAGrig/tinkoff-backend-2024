@@ -8,10 +8,12 @@ import edu.java.dto.RemoveLinkRequest;
 import edu.java.exceptions.ApiException;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
+@Component
 public class ScrapperHttpClient {
     private final WebClient client;
     private final String chatsPath;

@@ -1,22 +1,12 @@
 package edu.java.services;
 
-import edu.database.Database;
-import lombok.AllArgsConstructor;
-import org.springframework.stereotype.Service;
+import edu.database.entities.Link;
+import java.util.List;
 
-@AllArgsConstructor
-@Service
-public class UserService {
-    private Database database;
+public interface UserService {
+    void registerUser(Long tgChatId);
 
-    public void registerUser(Long userId) {
-        if (database.isUserRegistered(userId)) {
-            throw new IllegalArgumentException("The user is already registered.");
-        }
-        database.registerUser(userId);
-    }
+    void deleteUser(Long tgChatId);
 
-    public void deleteUser(Long userId) {
-        database.deleteUser(userId);
-    }
+    List<Long> getUsersIdsWithLink(Link link);
 }
