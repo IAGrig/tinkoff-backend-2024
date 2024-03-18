@@ -3,6 +3,7 @@ package edu.java.errorsHandlers;
 import edu.database.exceptions.LinkNotFoundException;
 import edu.database.exceptions.UserNotFoundException;
 import edu.java.dto.ApiErrorResponse;
+import edu.java.exceptions.ApiException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -43,6 +44,12 @@ public class ScrapperErrorHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ApiErrorResponse handleLinkNotFoundException(LinkNotFoundException ex) {
         return getApiErrorResponse(badRequestCode, "The link was not found", ex);
+    }
+
+    @ExceptionHandler(value = ApiException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiErrorResponse handle(ApiException ex) {
+        return getApiErrorResponse(badRequestCode, "", ex);
     }
 
     private ApiErrorResponse getApiErrorResponse(String code, String exceptionName, Throwable ex) {

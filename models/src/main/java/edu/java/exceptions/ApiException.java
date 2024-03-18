@@ -1,6 +1,6 @@
 package edu.java.exceptions;
 
-public class ApiException extends Throwable {
+public class ApiException extends RuntimeException {
     private final int code;
 
     public ApiException(String msg) {

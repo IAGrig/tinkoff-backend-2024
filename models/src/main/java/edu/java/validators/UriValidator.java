@@ -4,7 +4,11 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
+import org.springframework.stereotype.Component;
+import org.springframework.validation.annotation.Validated;
 
+@Component
+@Validated
 public class UriValidator implements ConstraintValidator<ValidUri, String> {
     @Override
     public void initialize(ValidUri constraintAnnotation) {
@@ -13,10 +17,10 @@ public class UriValidator implements ConstraintValidator<ValidUri, String> {
     @Override
     public boolean isValid(String url, ConstraintValidatorContext context) {
         try {
-            new URI(url);
-            return true;
+            URI uri = new URI(url);
+            return uri.getScheme() != null;
         } catch (URISyntaxException e) {
-            throw new RuntimeException(e);
+            return false;
         }
     }
 }
