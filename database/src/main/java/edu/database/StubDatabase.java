@@ -3,6 +3,7 @@ package edu.database;
 import edu.database.entities.Link;
 import edu.database.exceptions.LinkNotFoundException;
 import edu.database.exceptions.UserNotFoundException;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -71,7 +72,8 @@ public class StubDatabase implements Database {
 
     @Override
     public Long createLink(String domain, String url) {
-        Link link = new Link(availableID, domain, url);
+        Link link = new Link(availableID, domain, url,
+            OffsetDateTime.now(), OffsetDateTime.now(), OffsetDateTime.now());
         linkMap.put(availableID, link);
         log.info(String.format("Created link with id=%d and URL=%s", availableID, url));
         return availableID++;

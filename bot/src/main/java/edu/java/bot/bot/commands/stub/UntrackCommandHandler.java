@@ -1,4 +1,4 @@
-package edu.java.bot.bot.commands;
+package edu.java.bot.bot.commands.stub;
 
 import com.pengrad.telegrambot.model.Message;
 import edu.database.Database;
@@ -25,4 +25,5 @@ public class UntrackCommandHandler extends CommandHandler {
         database.removeLinkFromUser(userID, linkID);
         return String.format("You stopped tracking link with id=%d.", linkID);
     }
+
 }

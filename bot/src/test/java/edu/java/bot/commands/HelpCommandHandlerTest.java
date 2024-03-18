@@ -2,9 +2,9 @@ package edu.java.bot.commands;
 
 import com.pengrad.telegrambot.model.Message;
 import edu.database.Database;
-import edu.java.bot.bot.commands.CommandHandler;
-import edu.java.bot.bot.commands.HelpCommandHandler;
-import edu.java.bot.bot.commands.StartCommandHandler;
+import edu.java.bot.bot.commands.stub.CommandHandler;
+import edu.java.bot.bot.commands.stub.HelpCommandHandler;
+import edu.java.bot.bot.commands.stub.StartCommandHandler;
 import edu.java.bot.bot.links.LinksHandler;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
