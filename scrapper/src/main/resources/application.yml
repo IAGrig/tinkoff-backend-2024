@@ -3,10 +3,18 @@ app:
     enable: true
     interval: 10s
     force-check-delay: 10s
+    old-links-hour-period: 1
 
 spring:
   application:
     name: scrapper
+  liquibase:
+    enabled: false
+  datasource:
+    url: jdbc:postgresql://localhost:5432/scrapper
+    hikari:
+      username: ${POSTGRES_USERNAME:postgres}
+      password: ${POSTGRES_PASSWORD:postgres}
 
 server:
   port: 8080
