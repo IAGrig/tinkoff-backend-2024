@@ -38,7 +38,9 @@ public class StackoverflowHttpClientTest {
         client = new StackoverflowHttpClient(
             webClient,
             "http://localhost:8092",
-            "/questions"
+            "/questions",
+            "/answers",
+            "/comments"
         );
     }
 

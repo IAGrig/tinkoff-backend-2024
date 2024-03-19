@@ -17,6 +17,10 @@ public class ClientConfiguration {
 
     @Value("${scrapper.stackoverflow.questionsPath:/questions}")
     private String stackoverflowQuestionsPath;
+    @Value("${scrapper.stackoverflow.questionAnswersPath:/answers}")
+    private String stackoverflowQuestionAnswersPath;
+    @Value("${scrapper.stackoverflow.questionCommentsPath:/comments}")
+    private String stackoverflowQuestionCommentsPath;
 
     @Value("${scrapper.github.baseUrl:https://api.github.com}")
     private String baseGithubUrlDefault;
@@ -39,7 +43,9 @@ public class ClientConfiguration {
         return new StackoverflowHttpClient(
             stackoverflowWebClient,
             baseStackoverflowUrlDefault,
-            stackoverflowQuestionsPath
+            stackoverflowQuestionsPath,
+            stackoverflowQuestionAnswersPath,
+            stackoverflowQuestionCommentsPath
         );
     }
 

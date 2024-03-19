@@ -11,7 +11,7 @@ public class UpdateService {
     private Bot bot;
 
     public void processUpdateRequest(LinkUpdateRequest request) {
-        String message = String.format("Новое обновление по вашей ссылке: %s\nПодробнее: %s",
+        String message = String.format("Новое обновление по вашей ссылке: %s\nПодробнее:\n%s",
             request.getUrl(), request.getDescription()
         );
         for (Long chatId : request.getTgChatIds()) {

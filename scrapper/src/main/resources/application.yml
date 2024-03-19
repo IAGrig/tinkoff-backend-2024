@@ -28,6 +28,8 @@ scrapper:
   stackoverflow:
     baseUrl: https://api.stackexchange.com/2.3
     questionsPath: /questions
+    questionAnswersPath: /answers
+    questionCommentsPath: /comments
 
 clients:
   bot:
