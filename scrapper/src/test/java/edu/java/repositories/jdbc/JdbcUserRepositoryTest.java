@@ -12,7 +12,7 @@ import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.util.List;
-import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -32,8 +32,8 @@ public class JdbcUserRepositoryTest extends IntegrationTest {
         posrgresConnection = POSTGRES.createConnection("");
     }
 
-    @AfterAll
-    public static void cleanUp() throws SQLException {
+    @AfterEach
+    public void cleanUp() throws SQLException {
         posrgresConnection.prepareStatement("DELETE From links;").executeUpdate();
         posrgresConnection.prepareStatement("DELETE From users;").executeUpdate();
         posrgresConnection.prepareStatement("DELETE From users_links;").executeUpdate();

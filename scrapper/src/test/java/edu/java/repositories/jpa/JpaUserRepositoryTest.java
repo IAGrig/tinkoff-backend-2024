@@ -19,6 +19,7 @@ public class JpaUserRepositoryTest extends IntegrationTest {
     @Test
     @DisplayName("User creation test")
     public void addTest() {
+        userRepository.deleteAll();
         User user = new User(123L);
         Optional<User> beforeAddition = userRepository.findById(123L);
         userRepository.save(user);

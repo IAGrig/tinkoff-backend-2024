@@ -6,6 +6,7 @@ import edu.java.exceptions.ApiException;
 import edu.java.repositories.IntegrationTest;
 import edu.java.repositories.jpa.JpaLinkRepository;
 import edu.java.repositories.jpa.JpaUserRepository;
+import edu.java.services.LinkService;
 import java.net.URI;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
@@ -18,13 +19,15 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.TestPropertySource;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
 @SpringBootTest
+@TestPropertySource(properties = "app.database-access-type=jpa")
 public class JpaLinkServiceTest extends IntegrationTest {
     @Autowired
-    private JpaLinkService service;
+    private LinkService service;
     @Autowired
     private JpaLinkRepository repository;
     @Autowired

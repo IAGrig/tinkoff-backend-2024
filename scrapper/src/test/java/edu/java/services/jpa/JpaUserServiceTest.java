@@ -5,17 +5,20 @@ import edu.database.entities.User;
 import edu.java.exceptions.ApiException;
 import edu.java.repositories.IntegrationTest;
 import edu.java.repositories.jpa.JpaUserRepository;
+import edu.java.services.UserService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.TestPropertySource;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
 @SpringBootTest
+@TestPropertySource(properties = "app.database-access-type=jpa")
 public class JpaUserServiceTest extends IntegrationTest {
     @Autowired
-    private JpaUserService service;
+    private UserService service;
     @Autowired
     private JpaUserRepository repository;
 
