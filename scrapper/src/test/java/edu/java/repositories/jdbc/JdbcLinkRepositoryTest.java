@@ -1,11 +1,10 @@
-package edu.java.database.jdbc;
+package edu.java.repositories.jdbc;
 
 import edu.database.entities.Link;
 import edu.database.exceptions.LinkNotFoundException;
 import edu.database.exceptions.UserNotFoundException;
-import edu.java.database.IntegrationTest;
 import edu.java.exceptions.ApiException;
-import edu.java.repositories.jdbc.JdbcLinkRepository;
+import edu.java.repositories.IntegrationTest;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

@@ -1,9 +1,8 @@
-package edu.java.database.jdbc;
+package edu.java.repositories.jdbc;
 
 import edu.database.entities.User;
 import edu.database.exceptions.UserNotFoundException;
-import edu.java.database.IntegrationTest;
-import edu.java.repositories.jdbc.JdbcUserRepository;
+import edu.java.repositories.IntegrationTest;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

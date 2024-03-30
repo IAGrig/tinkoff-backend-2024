@@ -1,4 +1,4 @@
-package edu.java.database;
+package edu.java.repositories;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
