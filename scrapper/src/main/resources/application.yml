@@ -4,6 +4,7 @@ app:
     interval: 10s
     force-check-delay: 10s
     old-links-hour-period: 1
+  database-access-type: jdbc
 
 spring:
   application:

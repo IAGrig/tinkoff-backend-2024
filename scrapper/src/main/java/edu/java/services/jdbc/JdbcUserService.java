@@ -8,11 +8,9 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.dao.DuplicateKeyException;
-import org.springframework.stereotype.Service;
 
 @AllArgsConstructor
 @Log4j2
-@Service("jdbcUserService")
 public class JdbcUserService implements UserService {
     private JdbcUserRepository userRepository;
 

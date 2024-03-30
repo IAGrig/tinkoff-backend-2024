@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -33,8 +32,8 @@ public class LinkUpdateScheduler {
 
     @Autowired
     public LinkUpdateScheduler(
-        @Qualifier("jdbcLinkService") LinkService linkService,
-        @Qualifier("jdbcUserService") UserService userService,
+        LinkService linkService,
+        UserService userService,
         HttpClient stackoverflowHttpClient,
         HttpClient githubHttpClient,
         BotHttpClient botHttpClient

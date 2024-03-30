@@ -11,11 +11,17 @@ import org.springframework.validation.annotation.Validated;
 public record ApplicationConfig(
     @Bean
     @NotNull
-    Scheduler scheduler
+    Scheduler scheduler,
+    AccessType databaseAccessType
 ) {
     public record Scheduler(boolean enable,
                             @NotNull Duration interval,
                             @NotNull Duration forceCheckDelay,
                             int oldLinksHourPeriod) {
+    }
+
+    public enum AccessType {
+        JDBC,
+        JPA
     }
 }
