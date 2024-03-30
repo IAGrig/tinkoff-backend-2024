@@ -32,6 +32,6 @@ public class JdbcUserService implements UserService {
 
     @Override
     public List<Long> getUsersIdsWithLink(Link link) {
-        return userRepository.findUsersIdsWithLink(link.url());
+        return userRepository.findUsersIdsWithLink(link.getUrl());
     }
 }

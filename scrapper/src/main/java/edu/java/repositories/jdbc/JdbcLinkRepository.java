@@ -50,7 +50,7 @@ public class JdbcLinkRepository {
         int affectedRows;
         try {
             affectedRows = jdbcClient.sql(assignToUserRequest)
-                .param(link.id())
+                .param(link.getId())
                 .param(userId)
                 .update();
         } catch (DuplicateKeyException ex) {
@@ -68,7 +68,7 @@ public class JdbcLinkRepository {
         Link link = findLinkByUrl(url);
         String request = "DELETE FROM users_links WHERE link_id = ? AND user_tg_id = ?;";
         int affectedRows = jdbcClient.sql(request)
-            .param(link.id())
+            .param(link.getId())
             .param(userId)
             .update();
         if (affectedRows == 0) {

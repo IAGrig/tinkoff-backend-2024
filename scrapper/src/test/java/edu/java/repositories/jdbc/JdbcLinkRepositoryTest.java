@@ -1,8 +1,9 @@
-package edu.java.database;
+package edu.java.database.jdbc;
 
 import edu.database.entities.Link;
 import edu.database.exceptions.LinkNotFoundException;
 import edu.database.exceptions.UserNotFoundException;
+import edu.java.database.IntegrationTest;
 import edu.java.exceptions.ApiException;
 import edu.java.repositories.jdbc.JdbcLinkRepository;
 import java.sql.Connection;
@@ -80,7 +81,7 @@ public class JdbcLinkRepositoryTest extends IntegrationTest {
         selectStatement.setLong(1, 123L);
 
         Link link = linkRepository.removeLinkFromUser("test.com/delete", 123L);
-        selectStatement.setLong(2, link.id());
+        selectStatement.setLong(2, link.getId());
         ResultSet resultSet = selectStatement.executeQuery();
 
         assertThat(link).isNotNull();
@@ -105,9 +106,9 @@ public class JdbcLinkRepositoryTest extends IntegrationTest {
         List<Link> users = linkRepository.findUserLinks(123L);
 
         assertThat(users.size()).isGreaterThanOrEqualTo(2);
-        assertThat(users.stream().anyMatch(link -> link.url().equals("test.com/find-user-link")))
+        assertThat(users.stream().anyMatch(link -> link.getUrl().equals("test.com/find-user-link")))
             .isEqualTo(true);
-        assertThat(users.stream().anyMatch(link -> link.url().equals("test.com/find-user-link-2")))
+        assertThat(users.stream().anyMatch(link -> link.getUrl().equals("test.com/find-user-link-2")))
             .isEqualTo(true);
     }
 
@@ -127,8 +128,8 @@ public class JdbcLinkRepositoryTest extends IntegrationTest {
         Link link = linkRepository.findLinkByUrl("test.com/find-by-url");
 
         assertThat(link).isNotNull();
-        assertThat(link.url()).isEqualTo("test.com/find-by-url");
-        assertThat(link.domain()).isEqualTo("test.com");
+        assertThat(link.getUrl()).isEqualTo("test.com/find-by-url");
+        assertThat(link.getDomain()).isEqualTo("test.com");
     }
 
     @Test

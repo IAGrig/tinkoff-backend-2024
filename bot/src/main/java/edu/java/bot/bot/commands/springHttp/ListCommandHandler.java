@@ -35,7 +35,7 @@ public class ListCommandHandler extends CommandHandler {
         for (String domain : linksByDomains.keySet()) {
             stringBuilder.append(String.format("[%s]:\n", domain));
             for (Link link : linksByDomains.get(domain)) {
-                String line = String.format("    + %s\n", link.url());
+                String line = String.format("    + %s\n", link.getUrl());
                 stringBuilder.append(line);
             }
         }
@@ -47,11 +47,11 @@ public class ListCommandHandler extends CommandHandler {
         HashMap<String, List<Link>> map = new HashMap<>();
 
         for (Link link : userLinks) {
-            if (!map.containsKey(link.domain())) {
-                map.put(link.domain(), new ArrayList<>() {
+            if (!map.containsKey(link.getDomain())) {
+                map.put(link.getDomain(), new ArrayList<>() {
                 });
             }
-            map.get(link.domain()).add(link);
+            map.get(link.getDomain()).add(link);
         }
 
         return map;

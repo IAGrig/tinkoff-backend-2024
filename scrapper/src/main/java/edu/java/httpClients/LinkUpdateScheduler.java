@@ -51,11 +51,11 @@ public class LinkUpdateScheduler {
         List<Link> linksToBeChecked = linkService.getOldCheckedLinks(hoursCheckPeriod);
         List<LinkUpdateRequest> requests = new ArrayList<>();
         log.info("Check links: %s".formatted(linksToBeChecked.stream()
-            .map(l -> l.id().toString())
+            .map(l -> l.getId().toString())
             .collect(Collectors.joining(","))));
         for (Link link : linksToBeChecked) {
-            linkService.updateLastCheckTime(link.url());
-            switch (link.domain()) {
+            linkService.updateLastCheckTime(link.getUrl());
+            switch (link.getDomain()) {
                 // it's better to delegate id parsing to the http client classes
                 case "github.com":
                     LinkUpdateRequest githubUpdateRequest = checkLink(link, githubHttpClient, linkService, userService);

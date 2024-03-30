@@ -36,7 +36,7 @@ public class LinksController {
     ) {
         List<LinkResponse> links = linkService.getTrackedLinks(chatId)
             .stream()
-            .map(link -> new LinkResponse().id(link.id()).url(link.url()))
+            .map(link -> new LinkResponse().id(link.getId()).url(link.getUrl()))
             .toList();
         return ResponseEntity.ok(new ListLinksResponse().links(links));
     }
@@ -47,7 +47,7 @@ public class LinksController {
         @Valid @RequestBody AddLinkRequest request
     ) {
         Link link = linkService.addLinkTracking(chatId, request.getLink());
-        return ResponseEntity.ok(new LinkResponse().id(link.id()).url(link.url()));
+        return ResponseEntity.ok(new LinkResponse().id(link.getId()).url(link.getUrl()));
     }
 
     @DeleteMapping
@@ -56,6 +56,6 @@ public class LinksController {
         @Valid @RequestBody RemoveLinkRequest request
     ) {
         Link link = linkService.removeLinkTracking(chatId, request.getLink());
-        return ResponseEntity.ok(new LinkResponse().id(link.id()).url(link.url()));
+        return ResponseEntity.ok(new LinkResponse().id(link.getId()).url(link.getUrl()));
     }
 }

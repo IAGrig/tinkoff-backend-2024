@@ -1,7 +1,8 @@
-package edu.java.database;
+package edu.java.database.jdbc;
 
 import edu.database.entities.User;
 import edu.database.exceptions.UserNotFoundException;
+import edu.java.database.IntegrationTest;
 import edu.java.repositories.jdbc.JdbcUserRepository;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -87,7 +88,7 @@ public class JdbcUserRepositoryTest extends IntegrationTest {
         List<User> users = userRepository.findAll();
 
         assertThat(users.size()).isGreaterThanOrEqualTo(1);
-        assertThat(users.stream().anyMatch(user -> user.tgId().equals(111L))).isEqualTo(true);
+        assertThat(users.stream().anyMatch(user -> user.getTgId().equals(111L))).isEqualTo(true);
     }
 
     @Test
@@ -100,7 +101,7 @@ public class JdbcUserRepositoryTest extends IntegrationTest {
         User user = userRepository.findUserById(121L);
 
         assertThat(user).isNotNull();
-        assertThat(user.tgId()).isEqualTo(121L);
+        assertThat(user.getTgId()).isEqualTo(121L);
     }
 
     @Test

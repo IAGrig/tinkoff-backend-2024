@@ -22,7 +22,7 @@ public class GithubLinkChecker {
         String repositoryOwner;
         String repository;
         try {
-            String ownerRepositoryPart = link.url().split("github.com/")[1];
+            String ownerRepositoryPart = link.getUrl().split("github.com/")[1];
             repositoryOwner = ownerRepositoryPart.split("/")[0];
             repository = ownerRepositoryPart.split("/")[1];
         } catch (IndexOutOfBoundsException ex) {
@@ -30,15 +30,15 @@ public class GithubLinkChecker {
         }
         GithubRepositoryResponse githubResponse =
             githubHttpClient.getLastUpdate(repositoryOwner, repository);
-        if (link.lastUpdate() == null
-            || githubResponse.getUpdatedAt().isAfter(link.lastUpdate())
-            || githubResponse.getPushedAt().isAfter(link.lastUpdate())) {
+        if (link.getLastUpdate() == null
+            || githubResponse.getUpdatedAt().isAfter(link.getLastUpdate())
+            || githubResponse.getPushedAt().isAfter(link.getLastUpdate())) {
             List<Long> tgChatIds = userService.getUsersIdsWithLink(link);
             OffsetDateTime lastUpdate = githubResponse.getUpdatedAt().isAfter(githubResponse.getPushedAt())
                 ? githubResponse.getUpdatedAt()
                 : githubResponse.getPushedAt();
-            linkService.updateLastUpdateTime(link.url(), lastUpdate);
-            return new LinkUpdateRequest().url(link.url()).tgChatIds(tgChatIds);
+            linkService.updateLastUpdateTime(link.getUrl(), lastUpdate);
+            return new LinkUpdateRequest().url(link.getUrl()).tgChatIds(tgChatIds);
         }
         return null;
     }
