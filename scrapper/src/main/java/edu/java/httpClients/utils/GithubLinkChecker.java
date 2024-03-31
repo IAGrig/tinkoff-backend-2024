@@ -2,19 +2,29 @@ package edu.java.httpClients.utils;
 
 import edu.database.entities.Link;
 import edu.java.dto.LinkUpdateRequest;
+import edu.java.httpClients.HttpClient;
 import edu.java.httpClients.dto.github.GithubRepositoryResponse;
 import edu.java.httpClients.github.GithubHttpClient;
 import edu.java.services.LinkService;
 import edu.java.services.UserService;
 import java.time.OffsetDateTime;
 import java.util.List;
-import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 
-@AllArgsConstructor
+@Component
 public class GithubLinkChecker {
     private GithubHttpClient githubHttpClient;
     private LinkService linkService;
     private UserService userService;
+
+    public GithubLinkChecker(HttpClient githubHttpClient,
+        @Qualifier("jdbcLinkService") LinkService linkService,
+        @Qualifier("jdbcUserService") UserService userService) {
+        this.githubHttpClient = (GithubHttpClient) githubHttpClient;
+        this.linkService = linkService;
+        this.userService = userService;
+    }
 
     public LinkUpdateRequest checkLink(Link link) {
         String repositoryOwner;

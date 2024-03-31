@@ -2,6 +2,7 @@ package edu.java.httpClients.utils;
 
 import edu.database.entities.Link;
 import edu.java.dto.LinkUpdateRequest;
+import edu.java.httpClients.HttpClient;
 import edu.java.httpClients.dto.stackoverflow.StackoverflowItemsListResponse;
 import edu.java.httpClients.dto.stackoverflow.StackoverflowListItem;
 import edu.java.httpClients.dto.stackoverflow.StackoverflowOwner;
@@ -10,13 +11,22 @@ import edu.java.services.LinkService;
 import edu.java.services.UserService;
 import java.time.OffsetDateTime;
 import java.util.List;
-import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 
-@AllArgsConstructor
+@Component
 public class StackoverflowLinkChecker {
     private StackoverflowHttpClient stackoverflowHttpClient;
     private LinkService linkService;
     private UserService userService;
+
+    public StackoverflowLinkChecker(HttpClient stackoverflowHttpClient,
+        @Qualifier("jdbcLinkService") LinkService linkService,
+        @Qualifier("jdbcUserService") UserService userService) {
+        this.stackoverflowHttpClient = (StackoverflowHttpClient) stackoverflowHttpClient;
+        this.linkService = linkService;
+        this.userService = userService;
+    }
 
     public LinkUpdateRequest checkLink(Link link) {
         Long id;
