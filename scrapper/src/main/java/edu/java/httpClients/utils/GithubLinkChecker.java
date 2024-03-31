@@ -8,17 +8,15 @@ import edu.java.services.LinkService;
 import edu.java.services.UserService;
 import java.time.OffsetDateTime;
 import java.util.List;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@AllArgsConstructor
 public class GithubLinkChecker {
-    public static LinkUpdateRequest checkLink(
-        Link link,
-        GithubHttpClient githubHttpClient,
-        LinkService linkService,
-        UserService userService
-    ) {
+    private GithubHttpClient githubHttpClient;
+    private LinkService linkService;
+    private UserService userService;
+
+    public LinkUpdateRequest checkLink(Link link) {
         String repositoryOwner;
         String repository;
         try {

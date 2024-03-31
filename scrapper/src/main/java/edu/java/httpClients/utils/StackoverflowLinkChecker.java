@@ -10,17 +10,15 @@ import edu.java.services.LinkService;
 import edu.java.services.UserService;
 import java.time.OffsetDateTime;
 import java.util.List;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@AllArgsConstructor
 public class StackoverflowLinkChecker {
-    public static LinkUpdateRequest checkLink(
-        Link link,
-        StackoverflowHttpClient stackoverflowHttpClient,
-        LinkService linkService,
-        UserService userService
-    ) {
+    private StackoverflowHttpClient stackoverflowHttpClient;
+    private LinkService linkService;
+    private UserService userService;
+
+    public LinkUpdateRequest checkLink(Link link) {
         Long id;
         OffsetDateTime lastUpdateDateTime = OffsetDateTime.MIN;
         try {

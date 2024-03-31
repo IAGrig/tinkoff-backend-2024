@@ -4,6 +4,8 @@ import edu.database.entities.Link;
 import edu.java.dto.LinkUpdateRequest;
 import edu.java.httpClients.github.GithubHttpClient;
 import edu.java.httpClients.stackoverflow.StackoverflowHttpClient;
+import edu.java.httpClients.utils.GithubLinkChecker;
+import edu.java.httpClients.utils.StackoverflowLinkChecker;
 import edu.java.services.LinkService;
 import edu.java.services.UserService;
 import java.util.ArrayList;
@@ -16,8 +18,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import static edu.java.httpClients.utils.GithubLinkChecker.checkLink;
-import static edu.java.httpClients.utils.StackoverflowLinkChecker.checkLink;
 
 @Log4j2
 @Component
@@ -28,6 +28,8 @@ public class LinkUpdateScheduler {
     private final StackoverflowHttpClient stackoverflowHttpClient;
     private final GithubHttpClient githubHttpClient;
     private final BotHttpClient botHttpClient;
+    private final GithubLinkChecker githubLinkChecker;
+    private final StackoverflowLinkChecker stackoverflowLinkChecker;
     @Value("${app.scheduler.old-links-hour-period:1}")
     private int hoursCheckPeriod;
 
@@ -37,13 +39,17 @@ public class LinkUpdateScheduler {
         @Qualifier("jdbcUserService") UserService userService,
         HttpClient stackoverflowHttpClient,
         HttpClient githubHttpClient,
-        BotHttpClient botHttpClient
+        BotHttpClient botHttpClient,
+        GithubLinkChecker githubLinkChecker,
+        StackoverflowLinkChecker stackoverflowLinkChecker
     ) {
         this.linkService = linkService;
         this.userService = userService;
         this.stackoverflowHttpClient = (StackoverflowHttpClient) stackoverflowHttpClient;
         this.githubHttpClient = (GithubHttpClient) githubHttpClient;
         this.botHttpClient = botHttpClient;
+        this.githubLinkChecker = githubLinkChecker;
+        this.stackoverflowLinkChecker = stackoverflowLinkChecker;
     }
 
     @Scheduled(fixedDelayString = "#{@scheduler.interval}")
@@ -58,14 +64,13 @@ public class LinkUpdateScheduler {
             switch (link.domain()) {
                 // it's better to delegate id parsing to the http client classes
                 case "github.com":
-                    LinkUpdateRequest githubUpdateRequest = checkLink(link, githubHttpClient, linkService, userService);
+                    LinkUpdateRequest githubUpdateRequest = githubLinkChecker.checkLink(link);
                     if (githubUpdateRequest != null) {
                         requests.add(githubUpdateRequest);
                     }
                     break;
                 case "stackoverflow.com":
-                    LinkUpdateRequest stackoverflowUpdateRequest
-                        = checkLink(link, stackoverflowHttpClient, linkService, userService);
+                    LinkUpdateRequest stackoverflowUpdateRequest = stackoverflowLinkChecker.checkLink(link);
                     if (stackoverflowUpdateRequest != null) {
                         requests.add(stackoverflowUpdateRequest);
                     }
