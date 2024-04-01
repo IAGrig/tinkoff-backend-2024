@@ -42,7 +42,8 @@ public class StackoverflowHttpClientTest {
             "/questions",
             "/answers",
             "/comments",
-            BackOffPolicy.CONSTANT
+            BackOffPolicy.LINEAR,
+            List.of(404)
         );
     }
 

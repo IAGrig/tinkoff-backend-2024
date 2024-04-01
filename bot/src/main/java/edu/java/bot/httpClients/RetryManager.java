@@ -1,23 +1,28 @@
 package edu.java.bot.httpClients;
 
 import java.time.Duration;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.util.retry.Retry;
-import reactor.util.retry.RetryBackoffSpec;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class RetryManager {
-    public static RetryBackoffSpec getBackoffSpec(BackOffPolicy backOffPolicy, int delay, int attempts) {
-        RetryBackoffSpec spec = switch (backOffPolicy) {
-            case CONSTANT -> Retry.fixedDelay(attempts, Duration.ofSeconds(delay));
-            case LINEAR -> null; // TODO
-            case EXPONENT -> Retry.backoff(attempts, Duration.ofSeconds(delay));
+    private static final double JITTER_FACTOR = 0.2;
+
+    private static boolean filter(Throwable throwable, List<Integer> retryCodes) {
+        return throwable instanceof WebClientResponseException
+            && retryCodes.contains(((WebClientResponseException) throwable).getStatusCode().value());
+    }
+
+    public static Retry getBackoffSpec(BackOffPolicy backOffPolicy, List<Integer> retryCodes, int delay, int attempts) {
+        return switch (backOffPolicy) {
+            case CONSTANT -> Retry.fixedDelay(attempts, Duration.ofSeconds(delay)).jitter(JITTER_FACTOR)
+                .filter(throwable -> filter(throwable, retryCodes));
+            case LINEAR -> new LinearRetry(delay, attempts, throwable -> filter(throwable, retryCodes));
+            case EXPONENT -> Retry.backoff(attempts, Duration.ofSeconds(delay)).jitter(JITTER_FACTOR)
+                .filter(throwable -> filter(throwable, retryCodes));
         };
-//        spec.filter(throwable -> {
-//            throwable instanceof WebClientResponseException
-//                && ((WebClientResponseException) throwable).getStatusCode().value()
-//        })
-        return spec;
     }
 }

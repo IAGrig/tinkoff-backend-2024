@@ -27,18 +27,21 @@ scrapper:
   github:
     baseUrl: https://api.github.com
     backOffPolicy: constant
+    retryCodes: 500,502,503,504
   stackoverflow:
     baseUrl: https://api.stackexchange.com/2.3
     questionsPath: /questions
     questionAnswersPath: /answers
     questionCommentsPath: /comments
     backOffPolicy: constant
+    retryCodes: 500,502,503,504
 
 clients:
   bot:
     baseUrl: http://localhost:8090
     updatesPath: /updates
     backOffPolicy: constant
+    retryCodes: 500,502,503,504
 
 springdoc:
   swagger-ui:

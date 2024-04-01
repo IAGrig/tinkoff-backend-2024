@@ -5,6 +5,7 @@ import edu.java.dto.LinkUpdateRequest;
 import edu.java.exceptions.ApiException;
 import edu.java.httpClients.retry.BackOffPolicy;
 import edu.java.httpClients.retry.RetryManager;
+import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -16,11 +17,13 @@ public class BotHttpClient {
     private final WebClient client;
     private final String updatesPath;
     private final BackOffPolicy backOffPolicy;
+    private final List<Integer> retryCodes;
 
-    public BotHttpClient(WebClient client, String updatesPath, BackOffPolicy backOffPolicy) {
+    public BotHttpClient(WebClient client, String updatesPath, BackOffPolicy backOffPolicy, List<Integer> retryCodes) {
         this.client = client;
         this.updatesPath = updatesPath;
         this.backOffPolicy = backOffPolicy;
+        this.retryCodes = retryCodes;
     }
 
     public String update(LinkUpdateRequest request) {
@@ -36,7 +39,7 @@ public class BotHttpClient {
                         .getExceptionMessage())))
             )
             .bodyToMono(String.class)
-            .retryWhen(RetryManager.getBackoffSpec(backOffPolicy, RETRY_DELAY, RETRY_ATTEMPTS))
+            .retryWhen(RetryManager.getBackoffSpec(backOffPolicy, retryCodes, RETRY_DELAY, RETRY_ATTEMPTS))
             .block();
     }
 }

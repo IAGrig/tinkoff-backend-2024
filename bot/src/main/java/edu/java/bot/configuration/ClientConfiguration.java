@@ -2,6 +2,7 @@ package edu.java.bot.configuration;
 
 import edu.java.bot.httpClients.BackOffPolicy;
 import edu.java.bot.httpClients.ScrapperHttpClient;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,6 +23,8 @@ public class ClientConfiguration {
     private String scrapperTgChatIdHeader;
     @Value("${clients.scrapper.backOffPolicy:constant}")
     private String scrapperBackOffPolicyStr;
+    @Value("#{'${clients.scrapper.retryCodes:}'.split(',')}")
+    private List<Integer> scrapperRetryCodes;
 
     @Bean
     public ScrapperHttpClient scrapperHttpClient(WebClient scrapperWebClient, BackOffPolicy scrapperBackOffPolicy) {
@@ -30,7 +33,8 @@ public class ClientConfiguration {
             scrapperTgChatPath,
             scrapperLinksPath,
             scrapperTgChatIdHeader,
-            scrapperBackOffPolicy
+            scrapperBackOffPolicy,
+            scrapperRetryCodes
         );
     }
 

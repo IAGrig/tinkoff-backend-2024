@@ -20,6 +20,7 @@ public class StackoverflowHttpClient implements HttpClient {
     private final String questionAnswersPath;
     private final String questionCommentsPath;
     private final BackOffPolicy backOffPolicy;
+    private final List<Integer> retryCodes;
 
     public StackoverflowHttpClient(
         WebClient client,
@@ -27,7 +28,8 @@ public class StackoverflowHttpClient implements HttpClient {
         String questionsPath,
         String questionAnswersPath,
         String questionCommentsPath,
-        BackOffPolicy backOffPolicy
+        BackOffPolicy backOffPolicy,
+        List<Integer> retryCodes
     ) {
         this.client = client;
         this.baseUrlDefault = baseUrlDefault;
@@ -35,6 +37,7 @@ public class StackoverflowHttpClient implements HttpClient {
         this.questionAnswersPath = questionAnswersPath;
         this.questionCommentsPath = questionCommentsPath;
         this.backOffPolicy = backOffPolicy;
+        this.retryCodes = retryCodes;
     }
 
     @Override
@@ -43,7 +46,7 @@ public class StackoverflowHttpClient implements HttpClient {
             .uri(uriBuilder -> getUri(uriBuilder, questionsPath, id.toString()))
             .retrieve()
             .bodyToMono(StackoverflowQuestionUpdatesResponse.class)
-            .retryWhen(RetryManager.getBackoffSpec(backOffPolicy, RETRY_DELAY, RETRY_ATTEMPTS))
+            .retryWhen(RetryManager.getBackoffSpec(backOffPolicy, retryCodes, RETRY_DELAY, RETRY_ATTEMPTS))
             .onErrorReturn(StackoverflowQuestionUpdatesResponse.getEmpty())
             .block();
     }
@@ -54,7 +57,7 @@ public class StackoverflowHttpClient implements HttpClient {
             .uri(uriBuilder -> getUri(uriBuilder, questionsPath, idsList))
             .retrieve()
             .bodyToMono(StackoverflowQuestionUpdatesResponse.class)
-            .retryWhen(RetryManager.getBackoffSpec(backOffPolicy, RETRY_DELAY, RETRY_ATTEMPTS))
+            .retryWhen(RetryManager.getBackoffSpec(backOffPolicy, retryCodes, RETRY_DELAY, RETRY_ATTEMPTS))
             .onErrorReturn(StackoverflowQuestionUpdatesResponse.getEmpty())
             .block();
     }
@@ -64,14 +67,14 @@ public class StackoverflowHttpClient implements HttpClient {
             .uri(uriBuilder -> getAnswersCommentsPath(uriBuilder, questionAnswersPath, id.toString(), fromDate))
             .retrieve()
             .bodyToMono(StackoverflowItemsListResponse.class)
-            .retryWhen(RetryManager.getBackoffSpec(backOffPolicy, RETRY_DELAY, RETRY_ATTEMPTS))
+            .retryWhen(RetryManager.getBackoffSpec(backOffPolicy, retryCodes, RETRY_DELAY, RETRY_ATTEMPTS))
             .onErrorReturn(StackoverflowItemsListResponse.getEmpty())
             .block();
         StackoverflowItemsListResponse commentsResponse = client.get()
             .uri(uriBuilder -> getAnswersCommentsPath(uriBuilder, questionCommentsPath, id.toString(), fromDate))
             .retrieve()
             .bodyToMono(StackoverflowItemsListResponse.class)
-            .retryWhen(RetryManager.getBackoffSpec(backOffPolicy, RETRY_DELAY, RETRY_ATTEMPTS))
+            .retryWhen(RetryManager.getBackoffSpec(backOffPolicy, retryCodes, RETRY_DELAY, RETRY_ATTEMPTS))
             .onErrorReturn(StackoverflowItemsListResponse.getEmpty())
             .block();
         if (commentsResponse.getItems() != null) {

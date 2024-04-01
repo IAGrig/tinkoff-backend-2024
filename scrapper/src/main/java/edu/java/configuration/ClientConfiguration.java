@@ -5,6 +5,7 @@ import edu.java.httpClients.HttpClient;
 import edu.java.httpClients.github.GithubHttpClient;
 import edu.java.httpClients.retry.BackOffPolicy;
 import edu.java.httpClients.stackoverflow.StackoverflowHttpClient;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -23,11 +24,15 @@ public class ClientConfiguration {
     private String stackoverflowQuestionCommentsPath;
     @Value("${scrapper.stackoverflow.backOffPolicy:constant}")
     private String stackoverflowBackOffPolicyStr;
+    @Value("${scrapper.stackoverflow.retryCodes:}")
+    private List<Integer> stackoverflowRetryCodes;
 
     @Value("${scrapper.github.baseUrl:https://api.github.com}")
     private String baseGithubUrlDefault;
     @Value("${scrapper.github.backOffPolicy:constant}")
     private String githubBackOffPolicyStr;
+    @Value("${scrapper.github.retryCodes:}")
+    private List<Integer> githubRetryCodes;
 
     @Value("${clients.bot.baseUrl:http://localhost:8090}")
     private String baseBotUrlDefault;
@@ -35,31 +40,35 @@ public class ClientConfiguration {
     private String botUpdatesPath;
     @Value("${clients.bot.backOffPolicy:constant}")
     private String botBackOffPolicyStr;
+    @Value("${clients.bot.retryCodes:}")
+    private List<Integer> botRetryCodes;
 
     @Bean
     @Qualifier("githubHttpClient")
     public HttpClient githubHttpClient(WebClient githubWebClient, BackOffPolicy githubBackOffPolicy) {
-        return new GithubHttpClient(githubWebClient, baseGithubUrlDefault, githubBackOffPolicy);
+        return new GithubHttpClient(githubWebClient, baseGithubUrlDefault, githubBackOffPolicy, githubRetryCodes);
     }
 
     @Bean
     @Qualifier("stackoverflowHttpClient")
     public HttpClient stackoverflowHttpClient(
         WebClient stackoverflowWebClient,
-        BackOffPolicy stackoverflowBackOffPolicy) {
+        BackOffPolicy stackoverflowBackOffPolicy
+    ) {
         return new StackoverflowHttpClient(
             stackoverflowWebClient,
             baseStackoverflowUrlDefault,
             stackoverflowQuestionsPath,
             stackoverflowQuestionAnswersPath,
             stackoverflowQuestionCommentsPath,
-            stackoverflowBackOffPolicy
+            stackoverflowBackOffPolicy,
+            stackoverflowRetryCodes
         );
     }
 
     @Bean
     public BotHttpClient botHttpClient(WebClient botWebClient, BackOffPolicy botBackOffPolicy) {
-        return new BotHttpClient(botWebClient, botUpdatesPath, botBackOffPolicy);
+        return new BotHttpClient(botWebClient, botUpdatesPath, botBackOffPolicy, botRetryCodes);
     }
 
     @Bean

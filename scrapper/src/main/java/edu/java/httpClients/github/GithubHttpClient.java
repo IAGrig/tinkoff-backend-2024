@@ -4,6 +4,7 @@ import edu.java.httpClients.HttpClient;
 import edu.java.httpClients.dto.github.GithubRepositoryResponse;
 import edu.java.httpClients.retry.BackOffPolicy;
 import edu.java.httpClients.retry.RetryManager;
+import java.util.List;
 import org.springframework.web.reactive.function.client.WebClient;
 
 public class GithubHttpClient implements HttpClient {
@@ -12,11 +13,18 @@ public class GithubHttpClient implements HttpClient {
     private final WebClient client;
     private final String baseUrlDefault;
     private final BackOffPolicy backOffPolicy;
+    private final List<Integer> retryCodes;
 
-    public GithubHttpClient(WebClient client, String baseUrlDefault, BackOffPolicy backOffPolicy) {
+    public GithubHttpClient(
+        WebClient client,
+        String baseUrlDefault,
+        BackOffPolicy backOffPolicy,
+        List<Integer> retryCodes
+    ) {
         this.client = client;
         this.baseUrlDefault = baseUrlDefault;
         this.backOffPolicy = backOffPolicy;
+        this.retryCodes = retryCodes;
     }
 
     @Override
@@ -28,7 +36,7 @@ public class GithubHttpClient implements HttpClient {
                 .build())
             .retrieve()
             .bodyToMono(GithubRepositoryResponse.class)
-            .retryWhen(RetryManager.getBackoffSpec(backOffPolicy, RETRY_DELAY, RETRY_ATTEMPTS))
+            .retryWhen(RetryManager.getBackoffSpec(backOffPolicy, retryCodes, RETRY_DELAY, RETRY_ATTEMPTS))
             .onErrorReturn(GithubRepositoryResponse.getEmptyResponse())
             .block();
     }
@@ -42,7 +50,7 @@ public class GithubHttpClient implements HttpClient {
                 .build())
             .retrieve()
             .bodyToMono(GithubRepositoryResponse.class)
-            .retryWhen(RetryManager.getBackoffSpec(backOffPolicy, RETRY_DELAY, RETRY_ATTEMPTS))
+            .retryWhen(RetryManager.getBackoffSpec(backOffPolicy, retryCodes, RETRY_DELAY, RETRY_ATTEMPTS))
             .onErrorReturn(GithubRepositoryResponse.getEmptyResponse())
             .block();
     }

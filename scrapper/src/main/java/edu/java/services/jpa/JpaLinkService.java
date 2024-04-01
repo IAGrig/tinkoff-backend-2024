@@ -20,7 +20,8 @@ public class JpaLinkService implements LinkService {
         Link link = repository.findByUrl(url.toString());
         if (link == null) {
             link = repository.save(new Link(null, url.getHost(), url.toString(),
-                OffsetDateTime.now(), null, OffsetDateTime.now()));
+                OffsetDateTime.now(), null, OffsetDateTime.now()
+            ));
         }
         try {
             repository.addChatTracking(tgChatId, link.getId());
