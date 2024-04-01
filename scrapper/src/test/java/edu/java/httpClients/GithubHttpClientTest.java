@@ -4,6 +4,7 @@ import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import edu.java.httpClients.github.GithubHttpClient;
+import edu.java.httpClients.retry.BackOffPolicy;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -30,7 +31,7 @@ public class GithubHttpClientTest {
             .baseUrl("http://localhost:8092")
             .build();
 
-        client = new GithubHttpClient(webClient, "http://localhost:8092");
+        client = new GithubHttpClient(webClient, "http://localhost:8092", BackOffPolicy.CONSTANT);
     }
 
     @AfterEach

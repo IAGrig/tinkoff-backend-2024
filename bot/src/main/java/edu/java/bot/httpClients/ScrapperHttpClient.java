@@ -15,16 +15,25 @@ import reactor.core.publisher.Mono;
 
 @Component
 public class ScrapperHttpClient {
+    private final static int RETRY_DELAY = 2;
+    private final static int RETRY_ATTEMPTS = 3;
     private final WebClient client;
     private final String chatsPath;
     private final String linksPath;
     private final String chatIdHeader;
+    private final BackOffPolicy backOffPolicy;
 
-    public ScrapperHttpClient(WebClient client, String chatsPath, String linksPath, String chatIdHeader) {
+    public ScrapperHttpClient(
+        WebClient client,
+        String chatsPath,
+        String linksPath,
+        String chatIdHeader,
+        BackOffPolicy backOffPolicy) {
         this.client = client;
         this.chatsPath = chatsPath;
         this.linksPath = linksPath;
         this.chatIdHeader = chatIdHeader;
+        this.backOffPolicy = backOffPolicy;
     }
 
     public String registerChat(Long id) {
@@ -40,6 +49,7 @@ public class ScrapperHttpClient {
                     .flatMap(error -> Mono.error(new ApiException(error.getExceptionMessage())))
             )
             .bodyToMono(String.class)
+            .retryWhen(RetryManager.getBackoffSpec(backOffPolicy, RETRY_DELAY, RETRY_ATTEMPTS))
             .block();
     }
 
@@ -56,6 +66,7 @@ public class ScrapperHttpClient {
                     .flatMap(error -> Mono.error(new ApiException(error.getExceptionMessage())))
             )
             .bodyToMono(String.class)
+            .retryWhen(RetryManager.getBackoffSpec(backOffPolicy, RETRY_DELAY, RETRY_ATTEMPTS))
             .block();
     }
 
@@ -70,6 +81,7 @@ public class ScrapperHttpClient {
                     .flatMap(error -> Mono.error(new ApiException(error.getExceptionMessage())))
             )
             .bodyToMono(ListLinksResponse.class)
+            .retryWhen(RetryManager.getBackoffSpec(backOffPolicy, RETRY_DELAY, RETRY_ATTEMPTS))
             .block();
     }
 
@@ -86,6 +98,7 @@ public class ScrapperHttpClient {
                     .flatMap(error -> Mono.error(new ApiException(error.getExceptionMessage())))
             )
             .bodyToMono(LinkResponse.class)
+            .retryWhen(RetryManager.getBackoffSpec(backOffPolicy, RETRY_DELAY, RETRY_ATTEMPTS))
             .block();
     }
 
@@ -102,6 +115,7 @@ public class ScrapperHttpClient {
                     .flatMap(error -> Mono.error(new ApiException(error.getExceptionMessage())))
             )
             .bodyToMono(LinkResponse.class)
+            .retryWhen(RetryManager.getBackoffSpec(backOffPolicy, RETRY_DELAY, RETRY_ATTEMPTS))
             .block();
     }
 }

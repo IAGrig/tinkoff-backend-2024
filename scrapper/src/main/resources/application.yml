@@ -26,16 +26,19 @@ logging:
 scrapper:
   github:
     baseUrl: https://api.github.com
+    backOffPolicy: constant
   stackoverflow:
     baseUrl: https://api.stackexchange.com/2.3
     questionsPath: /questions
     questionAnswersPath: /answers
     questionCommentsPath: /comments
+    backOffPolicy: constant
 
 clients:
   bot:
     baseUrl: http://localhost:8090
     updatesPath: /updates
+    backOffPolicy: constant
 
 springdoc:
   swagger-ui:
