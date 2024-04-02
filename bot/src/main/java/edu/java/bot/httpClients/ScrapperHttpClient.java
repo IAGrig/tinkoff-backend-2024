@@ -53,6 +53,11 @@ public class ScrapperHttpClient {
                 response -> response.bodyToMono(ApiErrorResponse.class)
                     .flatMap(error -> Mono.error(new ApiException(error.getExceptionMessage())))
             )
+            .onStatus(
+                HttpStatus.TOO_MANY_REQUESTS::equals,
+                response -> response.bodyToMono(ApiErrorResponse.class)
+                    .flatMap(error -> Mono.error(new ApiException(error.getExceptionMessage())))
+            )
             .bodyToMono(String.class)
             .retryWhen(RetryManager.getBackoffSpec(backOffPolicy, retryCodes, RETRY_DELAY, RETRY_ATTEMPTS))
             .block();
@@ -67,6 +72,11 @@ public class ScrapperHttpClient {
             .retrieve()
             .onStatus(
                 HttpStatus.BAD_REQUEST::equals,
+                response -> response.bodyToMono(ApiErrorResponse.class)
+                    .flatMap(error -> Mono.error(new ApiException(error.getExceptionMessage())))
+            )
+            .onStatus(
+                HttpStatus.TOO_MANY_REQUESTS::equals,
                 response -> response.bodyToMono(ApiErrorResponse.class)
                     .flatMap(error -> Mono.error(new ApiException(error.getExceptionMessage())))
             )
@@ -85,6 +95,11 @@ public class ScrapperHttpClient {
                 response -> response.bodyToMono(ApiErrorResponse.class)
                     .flatMap(error -> Mono.error(new ApiException(error.getExceptionMessage())))
             )
+            .onStatus(
+                HttpStatus.TOO_MANY_REQUESTS::equals,
+                response -> response.bodyToMono(ApiErrorResponse.class)
+                    .flatMap(error -> Mono.error(new ApiException(error.getExceptionMessage())))
+            )
             .bodyToMono(ListLinksResponse.class)
             .retryWhen(RetryManager.getBackoffSpec(backOffPolicy, retryCodes, RETRY_DELAY, RETRY_ATTEMPTS))
             .block();
@@ -99,6 +114,11 @@ public class ScrapperHttpClient {
             .retrieve()
             .onStatus(
                 HttpStatus.BAD_REQUEST::equals,
+                response -> response.bodyToMono(ApiErrorResponse.class)
+                    .flatMap(error -> Mono.error(new ApiException(error.getExceptionMessage())))
+            )
+            .onStatus(
+                HttpStatus.TOO_MANY_REQUESTS::equals,
                 response -> response.bodyToMono(ApiErrorResponse.class)
                     .flatMap(error -> Mono.error(new ApiException(error.getExceptionMessage())))
             )

@@ -7,6 +7,11 @@ spring:
     name: bot
   jackson:
     time-zone: UTC
+  cache:
+    cache-names:
+      - bucket4j-bot-rate-limit
+    caffeine:
+      spec: maximumSize=1000,expireAfterAccess=3600s
 
 server:
   port: 8090
@@ -18,7 +23,7 @@ clients:
     linksPath: /links
     chatIdHeader: Tg-Chat-Id
     backOffPolicy: constant
-    retryCodes: 500,502,503,504
+    retryCodes: 500,502,503,504,429
 
 logging:
   config: classpath:log4j2-plain.xml
@@ -26,3 +31,22 @@ logging:
 springdoc:
   swagger-ui:
     path: /swagger-ui
+
+bucket4j:
+  enabled: true
+  filters:
+    - cache-name: bucket4j-bot-rate-limit
+      url: /updates
+      strategy: first
+      http-response-body: "{ \"code\": \"429\",
+             \"exceptionName\": \"Too Many Requests\",
+              \"exceptionMessage\": \"You generate too many requests, please, wait\",
+               \"description\": \"\",
+               \"stacktrace\": null}"
+      rate-limits:
+        - cache-key: "getRemoteAddr()"
+          bandwidths:
+            - capacity: 200
+              time: 1
+              unit: minutes
+              refill-speed: greedy
