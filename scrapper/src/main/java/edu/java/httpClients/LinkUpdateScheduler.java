@@ -6,8 +6,10 @@ import edu.java.httpClients.github.GithubHttpClient;
 import edu.java.httpClients.stackoverflow.StackoverflowHttpClient;
 import edu.java.services.LinkService;
 import edu.java.services.UserService;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Queue;
 import java.util.stream.Collectors;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,8 +74,15 @@ public class LinkUpdateScheduler {
                 default:
             }
         }
-        for (LinkUpdateRequest request : requests) {
-            botHttpClient.update(request);
+        // guarantee of message delivery
+        Queue<LinkUpdateRequest> queue = new ArrayDeque<>(requests);
+        while (!queue.isEmpty()) {
+            LinkUpdateRequest request = queue.poll();
+            try {
+                botHttpClient.update(request);
+            } catch (Exception ex) { // TODO change exception class
+                queue.add(request);
+            }
         }
     }
 }
