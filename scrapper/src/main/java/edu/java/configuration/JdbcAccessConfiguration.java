@@ -15,13 +15,11 @@ import org.springframework.context.annotation.Configuration;
 public class JdbcAccessConfiguration {
 
     @Bean
-    @ConditionalOnProperty(prefix = "app", name = "database-access-type", havingValue = "jdbc")
     public UserService jdbcUserService(JdbcUserRepository jdbcUserRepository) {
         return new JdbcUserService(jdbcUserRepository);
     }
 
     @Bean
-    @ConditionalOnProperty(prefix = "app", name = "database-access-type", havingValue = "jdbc")
     public LinkService jdbcLinkService(JdbcLinkRepository jdbcLinkRepository) {
         return new JdbcLinkService(jdbcLinkRepository);
     }

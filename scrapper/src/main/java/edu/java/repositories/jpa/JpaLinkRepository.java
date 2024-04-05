@@ -2,13 +2,16 @@ package edu.java.repositories.jpa;
 
 import edu.database.entities.Link;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+@Repository
 public interface JpaLinkRepository extends JpaRepository<Link, Long> {
-    Link findByUrl(String url);
+    Optional<Link> findByUrl(String url);
 
     @Query(value = "SELECT * FROM links WHERE last_check + interval '?1 hours' < now();", nativeQuery = true)
     @Transactional

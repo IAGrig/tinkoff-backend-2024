@@ -7,6 +7,7 @@ import edu.java.services.LinkService;
 import java.net.URI;
 import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.Optional;
 import lombok.AllArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,11 +18,10 @@ public class JpaLinkService implements LinkService {
 
     @Override
     public Link addLinkTracking(Long tgChatId, URI url) {
-        Link link = repository.findByUrl(url.toString());
-        if (link == null) {
-            link = repository.save(new Link(null, url.getHost(), url.toString(),
-                OffsetDateTime.now(), null, OffsetDateTime.now()));
-        }
+        Link link;
+        Optional<Link> optionalLink = repository.findByUrl(url.toString());
+        link = optionalLink.orElseGet(() -> repository.save(new Link(null, url.getHost(), url.toString(),
+                OffsetDateTime.now(), null, OffsetDateTime.now())));
         try {
             repository.addChatTracking(tgChatId, link.getId());
         } catch (DataIntegrityViolationException ex) {
@@ -32,12 +32,12 @@ public class JpaLinkService implements LinkService {
 
     @Override
     public Link removeLinkTracking(Long tgChatId, URI url) {
-        Link link = repository.findByUrl(url.toString());
-        if (link == null) {
+        Optional<Link> link = repository.findByUrl(url.toString());
+        if (link.isEmpty()) {
             throw new IllegalArgumentException("Your link is not exist");
         }
-        repository.removeLinkTracking(tgChatId, link.getId());
-        return link;
+        repository.removeLinkTracking(tgChatId, link.get().getId());
+        return link.get();
     }
 
     @Override
@@ -53,14 +53,20 @@ public class JpaLinkService implements LinkService {
     @Override
     @Transactional
     public void updateLastCheckTime(String url) {
-        Link link = repository.findByUrl(url);
-        link.setLastCheck(OffsetDateTime.now());
+        Optional<Link> link = repository.findByUrl(url);
+        if (link.isEmpty()) {
+            return;
+        }
+        link.get().setLastCheck(OffsetDateTime.now());
     }
 
     @Override
     @Transactional
     public void updateLastUpdateTime(String url, OffsetDateTime datetime) {
-        Link link = repository.findByUrl(url);
-        link.setLastUpdate(datetime);
+        Optional<Link> link = repository.findByUrl(url);
+        if (link.isEmpty()) {
+            return;
+        }
+        link.get().setLastUpdate(datetime);
     }
 }
