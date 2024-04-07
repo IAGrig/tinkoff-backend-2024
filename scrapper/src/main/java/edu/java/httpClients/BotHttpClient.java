@@ -5,13 +5,19 @@ import edu.java.dto.LinkUpdateRequest;
 import edu.java.exceptions.ApiException;
 import edu.java.httpClients.retry.BackOffPolicy;
 import edu.java.httpClients.retry.RetryManager;
+import edu.java.services.UpdatesHandler;
 import java.util.List;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
-public class BotHttpClient {
+@ConditionalOnProperty(
+    value = "app.useQueue",
+    havingValue = "false"
+)
+public class BotHttpClient implements UpdatesHandler {
     private final static int RETRY_DELAY = 2;
     private final static int RETRY_ATTEMPTS = 3;
     private final WebClient client;

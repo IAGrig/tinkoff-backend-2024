@@ -5,6 +5,15 @@ app:
     force-check-delay: 10s
     old-links-hour-period: 1
   database-access-type: jdbc
+  useQueue: true
+  kafka-queue:
+    bootstrap-server: localhost:9092
+    topic-name: botUpdates
+    partitions-count: 3
+    replicas-count: 1
+    acks-mode: all
+    linger-ms: 10_000
+    enable-idempotence: true
 
 spring:
   application:
