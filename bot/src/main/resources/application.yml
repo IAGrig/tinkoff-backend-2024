@@ -1,6 +1,12 @@
 app:
   telegram-token: ${TELEGRAM_API_KEY}
   allowed-domains: github.com,stackoverflow.com
+  kafka-queue:
+    bootstrap-server: localhost:9092
+    topic-name: botUpdates
+    consumer-updates-group-id: updates
+    auto-offset-reset: latest
+    enable-auto-commit: false
 
 spring:
   application:
