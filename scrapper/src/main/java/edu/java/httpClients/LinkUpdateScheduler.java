@@ -82,6 +82,7 @@ public class LinkUpdateScheduler {
             try {
                 updatesHandler.update(request);
             } catch (Exception ex) { // TODO change exception class
+                log.warn(ex);
                 queue.add(request);
             }
         }
