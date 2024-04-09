@@ -4,19 +4,37 @@ import edu.java.dto.LinkUpdateRequest;
 import java.util.HashMap;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
+import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
+import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.IntegerDeserializer;
+import org.apache.kafka.common.serialization.IntegerSerializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
+import org.springframework.kafka.config.TopicBuilder;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
+import org.springframework.kafka.core.DefaultKafkaProducerFactory;
+import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.kafka.core.ProducerFactory;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
+import org.springframework.kafka.support.serializer.JsonSerializer;
 
 @RequiredArgsConstructor
 @Configuration
 public class KafkaConfiguration {
     private final ApplicationConfig applicationConfig;
+
+    @Bean
+    public NewTopic botUpdatesDlqTopic() {
+        String topicName = applicationConfig.kafkaQueue().topicName()
+            .concat(applicationConfig.kafkaQueue().dlq().postfix());
+        return TopicBuilder.name(topicName)
+            .partitions(applicationConfig.kafkaQueue().dlq().partitionsCount())
+            .replicas(applicationConfig.kafkaQueue().dlq().replicasCount())
+            .build();
+    }
 
     @Bean
     public ConsumerFactory<Integer, LinkUpdateRequest> consumerFactory() {
@@ -40,5 +58,27 @@ public class KafkaConfiguration {
         factory.setConsumerFactory(consumerFactory);
         factory.getContainerProperties().setAckMode(applicationConfig.kafkaQueue().ackMode());
         return factory;
+    }
+
+    // producerFactory for sending messages to dlq
+    @Bean
+    public ProducerFactory<Integer, LinkUpdateRequest> producerFactory() {
+        Map<String, Object> configProps = new HashMap<>();
+        configProps.put(
+            ProducerConfig.BOOTSTRAP_SERVERS_CONFIG,
+            applicationConfig.kafkaQueue().bootstrapServer());
+        configProps.put(
+            ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG,
+            IntegerSerializer.class);
+        configProps.put(
+            ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG,
+            JsonSerializer.class);
+        return new DefaultKafkaProducerFactory<>(configProps);
+    }
+
+    // kafkaTemplate for sending messages to dlq
+    @Bean
+    public KafkaTemplate<Integer, LinkUpdateRequest> kafkaTemplate() {
+        return new KafkaTemplate<>(producerFactory());
     }
 }

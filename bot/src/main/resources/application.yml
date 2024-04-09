@@ -8,6 +8,10 @@ app:
     auto-offset-reset: latest
     enable-auto-commit: false
     ack-mode: manual
+    dlq:
+      postfix: _dlq
+      partitions-count: 1
+      replicas-count: 1
 
 spring:
   application:

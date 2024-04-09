@@ -20,7 +20,15 @@ public record ApplicationConfig(
             String consumerUpdatesGroupId,
             String autoOffsetReset,
             Boolean enableAutoCommit,
-            ContainerProperties.AckMode ackMode
+            ContainerProperties.AckMode ackMode,
+            Dlq dlq
     ) {
+        public record Dlq(
+            String postfix,
+            Integer partitionsCount,
+            Integer replicasCount
+        ) {
+
+        }
     }
 }
