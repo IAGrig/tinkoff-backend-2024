@@ -24,6 +24,9 @@ public class ScrapperKafkaProducer implements UpdatesHandler {
     private String topicName;
 
     public String update(LinkUpdateRequest update) {
+        if (update == null || update.getUrl() == null || update.getTgChatIds() == null) {
+            throw new NullPointerException("Update or its components are null");
+        }
         CompletableFuture<SendResult<Integer, LinkUpdateRequest>> future = kafkaTemplate.send(topicName, update);
         future.whenComplete(((sendResult, throwable) -> {
             if (throwable == null) {
