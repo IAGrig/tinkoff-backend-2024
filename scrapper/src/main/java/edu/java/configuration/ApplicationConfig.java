@@ -14,7 +14,8 @@ public record ApplicationConfig(
     Scheduler scheduler,
     AccessType databaseAccessType,
     Boolean useQueue,
-    KafkaQueue kafkaQueue
+    KafkaQueue kafkaQueue,
+    Metrics metrics
 ) {
     public enum AccessType {
         JDBC,
@@ -38,5 +39,15 @@ public record ApplicationConfig(
         Integer lingerMs,
         Boolean enableIdempotence
     ) {
+    }
+
+    public record Metrics(
+        ProcessedUpdatesCount processedUpdatesCount
+    ) {
+        public record ProcessedUpdatesCount(
+            String name,
+            String description
+        ) {
+        }
     }
 }

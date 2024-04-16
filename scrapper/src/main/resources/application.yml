@@ -14,6 +14,10 @@ app:
     acks-mode: all
     linger-ms: 10_000
     enable-idempotence: true
+  metrics:
+    processed-updates-count:
+      name: processed_updates_count
+      description: Count of processed by scrapper updates
 
 spring:
   application:

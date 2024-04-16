@@ -7,6 +7,7 @@ import edu.java.httpClients.stackoverflow.StackoverflowHttpClient;
 import edu.java.services.LinkService;
 import edu.java.services.UpdatesHandler;
 import edu.java.services.UserService;
+import io.micrometer.core.instrument.Counter;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +33,7 @@ public class LinkUpdateScheduler {
     private final UpdatesHandler updatesHandler;
     @Value("${app.scheduler.old-links-hour-period:1}")
     private int hoursCheckPeriod;
+    private Counter processedUpdatesCounter;
 
     @Autowired
     public LinkUpdateScheduler(
@@ -39,13 +41,15 @@ public class LinkUpdateScheduler {
         UserService userService,
         HttpClient stackoverflowHttpClient,
         HttpClient githubHttpClient,
-        UpdatesHandler updatesHandler
+        UpdatesHandler updatesHandler,
+        Counter processedUpdatesCounter
     ) {
         this.linkService = linkService;
         this.userService = userService;
         this.stackoverflowHttpClient = (StackoverflowHttpClient) stackoverflowHttpClient;
         this.githubHttpClient = (GithubHttpClient) githubHttpClient;
         this.updatesHandler = updatesHandler;
+        this.processedUpdatesCounter = processedUpdatesCounter;
     }
 
     @Scheduled(fixedDelayString = "#{@scheduler.interval}")
@@ -81,6 +85,7 @@ public class LinkUpdateScheduler {
             LinkUpdateRequest request = queue.poll();
             try {
                 updatesHandler.update(request);
+                processedUpdatesCounter.increment();
             } catch (Exception ex) { // TODO change exception class
                 log.warn(ex);
                 queue.add(request);
