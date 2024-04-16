@@ -61,3 +61,28 @@ bucket4j:
               time: 1
               unit: minutes
               refill-speed: greedy
+
+management:
+  server:
+    port: 8190
+  endpoints:
+    web:
+      base-path: /
+      path-mapping:
+        prometheus: metrics
+      exposure:
+        include:
+          - info
+          - health
+          - prometheus
+    enabled-by-default: false
+  endpoint:
+    health:
+      enabled: true
+    info:
+      enabled: true
+    prometheus:
+      enabled: true
+  metrics:
+    tags:
+      application: ${spring.application.name}
