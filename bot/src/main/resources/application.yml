@@ -12,6 +12,10 @@ app:
       postfix: _dlq
       partitions-count: 1
       replicas-count: 1
+  metrics:
+    processed_updates_count:
+      name: processed_updates_count
+      description: Count of processed by bot updates
 
 spring:
   application:

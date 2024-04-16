@@ -12,7 +12,8 @@ public record ApplicationConfig(
     String telegramToken,
     @NotEmpty
     String allowedDomains,
-    KafkaQueue kafkaQueue
+    KafkaQueue kafkaQueue,
+    Metrics metrics
 ) {
     public record KafkaQueue(
             String bootstrapServer,
@@ -29,6 +30,16 @@ public record ApplicationConfig(
             Integer replicasCount
         ) {
 
+        }
+    }
+
+    public record Metrics(
+        ProcessedUpdatesCount processedUpdatesCount
+    ) {
+        public record ProcessedUpdatesCount(
+            String name,
+            String description
+        ) {
         }
     }
 }
