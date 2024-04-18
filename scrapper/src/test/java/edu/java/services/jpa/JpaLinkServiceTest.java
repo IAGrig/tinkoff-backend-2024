@@ -24,7 +24,13 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
 @SpringBootTest
-@TestPropertySource(properties = {"app.database-access-type=jpa", "spring.cache.type=none", "bucket4j.enabled=false"})
+@TestPropertySource(properties = {
+    "app.database-access-type=jpa",
+    "spring.cache.type=none",
+    "bucket4j.enabled=false",
+    "spring.autoconfigure.exclude=org.springframework.boot.autoconfigure.kafka.KafkaAutoConfiguration"
+}
+)
 public class JpaLinkServiceTest extends IntegrationTest {
     @Autowired
     private LinkService service;

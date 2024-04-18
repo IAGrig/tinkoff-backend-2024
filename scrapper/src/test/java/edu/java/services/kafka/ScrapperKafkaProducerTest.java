@@ -18,10 +18,16 @@ import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.springframework.kafka.test.EmbeddedKafkaBroker;
 import org.springframework.kafka.test.context.EmbeddedKafka;
 import org.springframework.kafka.test.utils.KafkaTestUtils;
+import org.springframework.test.context.TestPropertySource;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
 @SpringBootTest
+@TestPropertySource(properties = {
+    "spring.cache.type=none",
+    "bucket4j.enabled=false"
+}
+)
 @EmbeddedKafka(kraft = false, partitions = 3, topics = "kafkaTest", ports = {9092})
 public class ScrapperKafkaProducerTest extends KafkaIntegrationTest {
     @Autowired
