@@ -31,12 +31,12 @@ public class JpaUserServiceTest extends IntegrationTest {
     @Test
     @DisplayName("Registration test")
     public void registrationTest() {
-        service.registerUser(123L);
+        service.registerUser(2123L);
 
-        User user = repository.findById(123L).orElse(null);
+        User user = repository.findById(2123L).orElse(null);
 
         assertThat(user).isNotNull();
-        assertThat(user.getTgId()).isEqualTo(123L);
+        assertThat(user.getTgId()).isEqualTo(2123L);
     }
 
     @Test

@@ -25,12 +25,12 @@ public class JpaUserRepositoryTest extends IntegrationTest {
     @DisplayName("User creation test")
     public void addTest() {
         userRepository.deleteAll();
-        User user = new User(123L);
-        Optional<User> beforeAddition = userRepository.findById(123L);
+        User user = new User(323L);
+        Optional<User> beforeAddition = userRepository.findById(323L);
         userRepository.save(user);
 
         assertThat(beforeAddition.isPresent()).isEqualTo(false);
-        assertThat(userRepository.findById(123L).isPresent()).isEqualTo(true);
+        assertThat(userRepository.findById(323L).isPresent()).isEqualTo(true);
     }
 
     @Test

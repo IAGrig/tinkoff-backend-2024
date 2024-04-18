@@ -50,12 +50,12 @@ public class JdbcUserRepositoryTest extends IntegrationTest {
         PreparedStatement selectStatement = posrgresConnection
             .prepareStatement("SELECT tg_id, registered FROM users;");
 
-        User user = userRepository.addUser(123L);
+        User user = userRepository.addUser(223L);
         ResultSet resultSet = selectStatement.executeQuery();
         resultSet.next();
 
         assertThat(user).isNotNull();
-        assertThat(resultSet.getLong(1)).isEqualTo(123L);
+        assertThat(resultSet.getLong(1)).isEqualTo(223L);
         assertThat(offsetDateTimeFromTimestamp(resultSet.getTimestamp(2)))
             .isEqualToIgnoringSeconds(OffsetDateTime.now());
     }
