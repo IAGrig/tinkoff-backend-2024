@@ -8,7 +8,6 @@ import java.net.URI;
 import java.time.OffsetDateTime;
 import java.util.List;
 import lombok.AllArgsConstructor;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.transaction.annotation.Transactional;
 
 @AllArgsConstructor
@@ -23,11 +22,10 @@ public class JpaLinkService implements LinkService {
                 OffsetDateTime.now(), null, OffsetDateTime.now()
             ));
         }
-        try {
-            repository.addChatTracking(tgChatId, link.getId());
-        } catch (DataIntegrityViolationException ex) {
-            throw new ApiException("Opps, error. Maybe you already track this link");
+        if (isLinkTrackedByUser(url, tgChatId)) {
+            throw new ApiException("Opps, error. You already track this link");
         }
+        repository.addChatTracking(tgChatId, link.getId());
         return link;
     }
 
@@ -63,5 +61,10 @@ public class JpaLinkService implements LinkService {
     public void updateLastUpdateTime(String url, OffsetDateTime datetime) {
         Link link = repository.findByUrl(url);
         link.setLastUpdate(datetime);
+    }
+
+    private boolean isLinkTrackedByUser(URI url, Long tgChatId) {
+        List<Link> userLinks = repository.findAllUserLinks(tgChatId);
+        return userLinks.stream().anyMatch(link -> link.getUrl().equals(url.toString()));
     }
 }

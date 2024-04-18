@@ -68,10 +68,9 @@ public class JpaLinkServiceTest extends IntegrationTest {
         Link link = repository.save(new Link(null, "test.com", "test.com/test",
             OffsetDateTime.now(), OffsetDateTime.now(), OffsetDateTime.now()
         ));
+        service.addLinkTracking(2L, URI.create("https://test.com/test-double-tracked"));
 
-        service.addLinkTracking(2L, URI.create("test.com/test"));
-
-        assertThatThrownBy(() -> service.addLinkTracking(2L, URI.create("test.com/test")))
+        assertThatThrownBy(() -> service.addLinkTracking(2L, URI.create("https://test.com/test-double-tracked")))
             .isExactlyInstanceOf(ApiException.class);
     }
 
