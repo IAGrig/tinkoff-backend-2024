@@ -19,7 +19,8 @@ public record ApplicationConfig(
 ) {
     public enum AccessType {
         JDBC,
-        JPA
+        JPA,
+        JOOQ
     }
 
     public record Scheduler(
