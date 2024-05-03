@@ -48,6 +48,9 @@
     <modules>
         <module>bot</module>
         <module>scrapper</module>
+        <module>database</module>
+        <module>models</module>
+        <module>scrapper-jooq</module>
     </modules>
 
     <dependencyManagement>
