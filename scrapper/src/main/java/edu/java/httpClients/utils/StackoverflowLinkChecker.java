@@ -32,7 +32,7 @@ public class StackoverflowLinkChecker {
         Long id;
         OffsetDateTime lastUpdateDateTime = OffsetDateTime.MIN;
         try {
-            id = Long.parseLong(link.url().split("stackoverflow.com/questions/")[1]
+            id = Long.parseLong(link.getUrl().split("stackoverflow.com/questions/")[1]
                 .split("/")[0]);
         } catch (NumberFormatException | IndexOutOfBoundsException ex) {
             return null;
@@ -40,7 +40,7 @@ public class StackoverflowLinkChecker {
         List<Long> tgChatIds = userService.getUsersIdsWithLink(link);
         StringBuilder description = new StringBuilder();
         StackoverflowItemsListResponse stackoverflowResponse =
-            stackoverflowHttpClient.getUpdates(id, link.lastUpdate());
+            stackoverflowHttpClient.getUpdates(id, link.getLastUpdate());
         if (stackoverflowResponse.getItems() == null) {
             return null;
         }
@@ -60,10 +60,10 @@ public class StackoverflowLinkChecker {
             }
         }
         if (lastUpdateDateTime.isAfter(OffsetDateTime.MIN)) {
-            linkService.updateLastUpdateTime(link.url(), lastUpdateDateTime);
+            linkService.updateLastUpdateTime(link.getUrl(), lastUpdateDateTime);
         }
         return new LinkUpdateRequest()
-            .url(link.url())
+            .url(link.getUrl())
             .tgChatIds(tgChatIds)
             .description(description.toString());
     }

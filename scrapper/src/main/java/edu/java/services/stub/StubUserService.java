@@ -5,10 +5,8 @@ import edu.database.entities.Link;
 import edu.java.services.UserService;
 import java.util.List;
 import lombok.AllArgsConstructor;
-import org.springframework.stereotype.Service;
 
 @AllArgsConstructor
-@Service
 public class StubUserService implements UserService {
     private Database database;
 
