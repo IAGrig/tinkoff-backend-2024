@@ -49,6 +49,8 @@
         <module>bot</module>
         <module>scrapper</module>
         <module>database</module>
+        <module>models</module>
+        <module>scrapper-jooq</module>
     </modules>
 
     <dependencyManagement>
@@ -60,7 +62,7 @@
             </dependency>
             <dependency>
                 <groupId>org.wiremock</groupId>
-                <artifactId>wiremock</artifactId>
+                <artifactId>wiremock-standalone</artifactId>
                 <version>${wiremock.version}</version>
             </dependency>
 

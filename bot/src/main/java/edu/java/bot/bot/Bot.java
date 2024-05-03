@@ -5,12 +5,9 @@ import com.pengrad.telegrambot.UpdatesListener;
 import com.pengrad.telegrambot.model.BotCommand;
 import com.pengrad.telegrambot.request.SendMessage;
 import com.pengrad.telegrambot.request.SetMyCommands;
-import edu.database.Database;
-import edu.database.StubDatabase;
-import edu.java.bot.bot.commands.CommandsManager;
+import edu.java.bot.bot.commands.springHttp.CommandsManager;
 import edu.java.bot.bot.links.LinksHandler;
-import java.util.HashMap;
-import java.util.HashSet;
+import edu.java.bot.httpClients.ScrapperHttpClient;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -21,14 +18,14 @@ import org.springframework.stereotype.Component;
 @Component
 @Log4j2
 public class Bot implements CommandLineRunner {
-    private final Database database;
+    private final ScrapperHttpClient scrapperClient;
     private final CommandsManager commandsManager;
     private final TelegramBot bot;
 
     @Autowired
-    public Bot(Environment env, LinksHandler linksHandler) {
-        this.database = new StubDatabase(new HashMap<>(), new HashMap<>(), new HashSet<>());
-        this.commandsManager = new CommandsManager(database, linksHandler);
+    public Bot(Environment env, LinksHandler linksHandler, ScrapperHttpClient scrapperClient) {
+        this.scrapperClient = scrapperClient;
+        this.commandsManager = new CommandsManager(scrapperClient, linksHandler);
         this.bot = new TelegramBot(env.getProperty("telegram_api_key"));
     }
 
@@ -38,6 +35,10 @@ public class Bot implements CommandLineRunner {
         setMyCommands();
 
         log.info("Bot started.");
+    }
+
+    public void sendMessage(Long chatId, String message) {
+        bot.execute(new SendMessage(chatId, message));
     }
 
     private void setUpdatesListener() {

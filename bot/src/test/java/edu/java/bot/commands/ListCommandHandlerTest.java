@@ -3,9 +3,9 @@ package edu.java.bot.commands;
 import com.pengrad.telegrambot.model.Message;
 import edu.database.Database;
 import edu.database.entities.Link;
-import edu.java.bot.bot.commands.CommandHandler;
-import edu.java.bot.bot.commands.ListCommandHandler;
-import edu.java.bot.bot.commands.StartCommandHandler;
+import edu.java.bot.bot.commands.stub.CommandHandler;
+import edu.java.bot.bot.commands.stub.ListCommandHandler;
+import edu.java.bot.bot.commands.stub.StartCommandHandler;
 import edu.java.bot.bot.links.LinksHandler;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -97,14 +97,14 @@ public class ListCommandHandlerTest {
     }
 
     private Database getSingleElementMockDatabase(Long userID) {
-        Link link = new Link(1L, "test", "https://test.test");
+        Link link = new Link(1L, "test", "https://test.test", null, null, null);
         Mockito.when(mockDatabase.getAllUserLinks(userID)).thenReturn(List.of(link));
         return mockDatabase;
     }
 
     private Database getMultipleElementMockDatabase(Long userID) {
-        Link link1 = new Link(1L, "test", "https://test.test");
-        Link link2 = new Link(2L, "testing", "https://testing.test");
+        Link link1 = new Link(1L, "test", "https://test.test", null, null, null);
+        Link link2 = new Link(2L, "testing", "https://testing.test", null, null, null);
         Mockito.when(mockDatabase.getAllUserLinks(userID)).thenReturn(List.of(link1, link2));
         return mockDatabase;
     }
