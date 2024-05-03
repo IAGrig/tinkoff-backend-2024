@@ -3,6 +3,7 @@ package edu.database;
 import edu.database.entities.Link;
 import edu.database.exceptions.LinkNotFoundException;
 import edu.database.exceptions.UserNotFoundException;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -64,14 +65,15 @@ public class StubDatabase implements Database {
         if (link == null) {
             throw new LinkNotFoundException("The link with the specified url was not found.");
         }
-        usersToLinksMap.get(userID).remove(link.id());
+        usersToLinksMap.get(userID).remove(link.getId());
         log.info(String.format("Link %s removed from user %d", url, userID));
 
     }
 
     @Override
     public Long createLink(String domain, String url) {
-        Link link = new Link(availableID, domain, url);
+        Link link = new Link(availableID, domain, url,
+            OffsetDateTime.now(), OffsetDateTime.now(), OffsetDateTime.now());
         linkMap.put(availableID, link);
         log.info(String.format("Created link with id=%d and URL=%s", availableID, url));
         return availableID++;
@@ -95,7 +97,7 @@ public class StubDatabase implements Database {
             .filter(entry -> entry.getKey().equals(userID))
             .flatMap(entry -> entry.getValue().stream()).toList();
         List<Link> result = linkMap.values().stream()
-            .filter(link -> userLinksIDs.contains(link.id()))
+            .filter(link -> userLinksIDs.contains(link.getId()))
             .toList();
         log.info(String.format("Got links for user %d", userID));
         return result;
@@ -103,7 +105,7 @@ public class StubDatabase implements Database {
 
     private Link getLinkByUrl(String url) {
         List<Link> linksWithUrl = linkMap.values().stream()
-            .filter(link -> link.url().equals(url))
+            .filter(link -> link.getUrl().equals(url))
             .toList();
         if (linksWithUrl.isEmpty()) {
             return null;

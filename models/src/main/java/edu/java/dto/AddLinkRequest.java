@@ -3,6 +3,7 @@ package edu.java.dto;
 import edu.java.validators.ValidUri;
 import jakarta.validation.constraints.NotNull;
 import java.net.URI;
+import java.net.URISyntaxException;
 import lombok.Data;
 import org.springframework.validation.annotation.Validated;
 
@@ -14,7 +15,11 @@ public class AddLinkRequest {
     private URI link;
 
     public AddLinkRequest link(String link) {
-        this.link = URI.create(link);
+        try {
+            this.link = new URI(link);
+        } catch (URISyntaxException e) {
+            throw new RuntimeException("Invalid URI syntax: " + link, e);
+        }
         return this;
     }
 

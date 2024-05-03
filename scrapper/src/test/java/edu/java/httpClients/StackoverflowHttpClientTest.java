@@ -3,6 +3,7 @@ package edu.java.httpClients;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
+import edu.java.httpClients.retry.BackOffPolicy;
 import edu.java.httpClients.stackoverflow.StackoverflowHttpClient;
 import java.util.List;
 import org.junit.jupiter.api.AfterEach;
@@ -38,7 +39,11 @@ public class StackoverflowHttpClientTest {
         client = new StackoverflowHttpClient(
             webClient,
             "http://localhost:8092",
-            "/questions"
+            "/questions",
+            "/answers",
+            "/comments",
+            BackOffPolicy.LINEAR,
+            List.of(404)
         );
     }
 
