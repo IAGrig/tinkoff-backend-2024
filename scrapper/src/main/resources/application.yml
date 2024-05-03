@@ -14,6 +14,10 @@ app:
     acks-mode: all
     linger-ms: 10_000
     enable-idempotence: true
+  metrics:
+    processed-updates-count:
+      name: processed_updates_count
+      description: Count of processed by scrapper updates
 
 spring:
   application:
@@ -30,6 +34,8 @@ spring:
       - bucket4j-scrapper-rate-limit
     caffeine:
       spec: maximumSize=1000,expireAfterAccess=3600s
+  jooq:
+    sql-dialect: postgres
 
 server:
   port: 8080
@@ -79,3 +85,28 @@ bucket4j:
               time: 1
               unit: minutes
               refill-speed: greedy
+
+management:
+  server:
+    port: 8180
+  endpoints:
+    web:
+      base-path: /
+      path-mapping:
+        prometheus: metrics
+      exposure:
+        include:
+          - info
+          - health
+          - prometheus
+    enabled-by-default: false
+  endpoint:
+    health:
+      enabled: true
+    info:
+      enabled: true
+    prometheus:
+      enabled: true
+  metrics:
+    tags:
+      application: ${spring.application.name}

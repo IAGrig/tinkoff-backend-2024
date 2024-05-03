@@ -2,6 +2,7 @@ package edu.java.bot.services;
 
 import edu.java.bot.bot.Bot;
 import edu.java.dto.LinkUpdateRequest;
+import io.micrometer.core.instrument.Counter;
 import java.util.Objects;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class UpdateService {
     private Bot bot;
+    private Counter processedUpdatesCounter;
 
     public void processUpdateRequest(LinkUpdateRequest request) {
         if (request.getUrl() == null) {
@@ -24,5 +26,6 @@ public class UpdateService {
         for (Long chatId : request.getTgChatIds()) {
             bot.sendMessage(chatId, message);
         }
+        processedUpdatesCounter.increment();
     }
 }
