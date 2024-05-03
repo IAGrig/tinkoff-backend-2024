@@ -69,4 +69,9 @@ public class JpaLinkService implements LinkService {
         }
         link.get().setLastUpdate(datetime);
     }
+
+    private boolean isLinkTrackedByUser(URI url, Long tgChatId) {
+        List<Link> userLinks = repository.findAllUserLinks(tgChatId);
+        return userLinks.stream().anyMatch(link -> link.getUrl().equals(url.toString()));
+    }
 }

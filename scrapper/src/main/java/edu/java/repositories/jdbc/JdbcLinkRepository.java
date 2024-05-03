@@ -101,7 +101,7 @@ public class JdbcLinkRepository {
 
     public Link findLinkByUrl(String url) {
         String selectQuery = "SELECT id, url, domain_name, registered, last_update, last_check "
-             + "FROM links WHERE url = ?;";
+            + "FROM links WHERE url = ?;";
         try {
             return jdbcClient.sql(selectQuery)
                 .param(url)

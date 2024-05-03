@@ -18,10 +18,15 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.TestPropertySource;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
 @SpringBootTest
+@TestPropertySource(properties = {
+    "spring.autoconfigure.exclude=org.springframework.boot.autoconfigure.kafka.KafkaAutoConfiguration"
+}
+)
 public class JdbcUserRepositoryTest extends IntegrationTest {
     private static Connection posrgresConnection;
     @Autowired
@@ -45,12 +50,12 @@ public class JdbcUserRepositoryTest extends IntegrationTest {
         PreparedStatement selectStatement = posrgresConnection
             .prepareStatement("SELECT tg_id, registered FROM users;");
 
-        User user = userRepository.addUser(123L);
+        User user = userRepository.addUser(223L);
         ResultSet resultSet = selectStatement.executeQuery();
         resultSet.next();
 
         assertThat(user).isNotNull();
-        assertThat(resultSet.getLong(1)).isEqualTo(123L);
+        assertThat(resultSet.getLong(1)).isEqualTo(223L);
         assertThat(offsetDateTimeFromTimestamp(resultSet.getTimestamp(2)))
             .isEqualToIgnoringSeconds(OffsetDateTime.now());
     }

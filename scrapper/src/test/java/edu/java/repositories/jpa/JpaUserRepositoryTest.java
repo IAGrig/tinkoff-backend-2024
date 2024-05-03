@@ -8,10 +8,15 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.TestPropertySource;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 @SpringBootTest
+@TestPropertySource(properties = {
+    "spring.autoconfigure.exclude=org.springframework.boot.autoconfigure.kafka.KafkaAutoConfiguration"
+}
+)
 public class JpaUserRepositoryTest extends IntegrationTest {
     @Autowired
     private JpaUserRepository userRepository;
@@ -20,12 +25,12 @@ public class JpaUserRepositoryTest extends IntegrationTest {
     @DisplayName("User creation test")
     public void addTest() {
         userRepository.deleteAll();
-        User user = new User(123L);
-        Optional<User> beforeAddition = userRepository.findById(123L);
+        User user = new User(323L);
+        Optional<User> beforeAddition = userRepository.findById(323L);
         userRepository.save(user);
 
         assertThat(beforeAddition.isPresent()).isEqualTo(false);
-        assertThat(userRepository.findById(123L).isPresent()).isEqualTo(true);
+        assertThat(userRepository.findById(323L).isPresent()).isEqualTo(true);
     }
 
     @Test
