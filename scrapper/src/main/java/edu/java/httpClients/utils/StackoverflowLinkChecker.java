@@ -11,7 +11,6 @@ import edu.java.services.LinkService;
 import edu.java.services.UserService;
 import java.time.OffsetDateTime;
 import java.util.List;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -21,8 +20,8 @@ public class StackoverflowLinkChecker {
     private UserService userService;
 
     public StackoverflowLinkChecker(HttpClient stackoverflowHttpClient,
-        @Qualifier("jdbcLinkService") LinkService linkService,
-        @Qualifier("jdbcUserService") UserService userService) {
+        LinkService linkService,
+        UserService userService) {
         this.stackoverflowHttpClient = (StackoverflowHttpClient) stackoverflowHttpClient;
         this.linkService = linkService;
         this.userService = userService;

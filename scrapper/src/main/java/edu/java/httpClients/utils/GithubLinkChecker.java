@@ -9,7 +9,6 @@ import edu.java.services.LinkService;
 import edu.java.services.UserService;
 import java.time.OffsetDateTime;
 import java.util.List;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -19,8 +18,8 @@ public class GithubLinkChecker {
     private UserService userService;
 
     public GithubLinkChecker(HttpClient githubHttpClient,
-        @Qualifier("jdbcLinkService") LinkService linkService,
-        @Qualifier("jdbcUserService") UserService userService) {
+        LinkService linkService,
+        UserService userService) {
         this.githubHttpClient = (GithubHttpClient) githubHttpClient;
         this.linkService = linkService;
         this.userService = userService;
