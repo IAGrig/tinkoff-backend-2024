@@ -1,6 +1,21 @@
 app:
   telegram-token: ${TELEGRAM_API_KEY}
   allowed-domains: github.com,stackoverflow.com
+  kafka-queue:
+    bootstrap-server: localhost:9092
+    topic-name: botUpdates
+    consumer-updates-group-id: updates
+    auto-offset-reset: latest
+    enable-auto-commit: false
+    ack-mode: manual
+    dlq:
+      postfix: _dlq
+      partitions-count: 1
+      replicas-count: 1
+  metrics:
+    processed_updates_count:
+      name: processed_updates_count
+      description: Count of processed by bot updates
 
 spring:
   application:
@@ -50,3 +65,28 @@ bucket4j:
               time: 1
               unit: minutes
               refill-speed: greedy
+
+management:
+  server:
+    port: 8190
+  endpoints:
+    web:
+      base-path: /
+      path-mapping:
+        prometheus: metrics
+      exposure:
+        include:
+          - info
+          - health
+          - prometheus
+    enabled-by-default: false
+  endpoint:
+    health:
+      enabled: true
+    info:
+      enabled: true
+    prometheus:
+      enabled: true
+  metrics:
+    tags:
+      application: ${spring.application.name}

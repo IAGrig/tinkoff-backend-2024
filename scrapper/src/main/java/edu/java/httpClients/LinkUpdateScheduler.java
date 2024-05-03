@@ -5,7 +5,9 @@ import edu.java.dto.LinkUpdateRequest;
 import edu.java.httpClients.github.GithubHttpClient;
 import edu.java.httpClients.stackoverflow.StackoverflowHttpClient;
 import edu.java.services.LinkService;
+import edu.java.services.UpdatesHandler;
 import edu.java.services.UserService;
+import io.micrometer.core.instrument.Counter;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,9 +30,10 @@ public class LinkUpdateScheduler {
     private final UserService userService;
     private final StackoverflowHttpClient stackoverflowHttpClient;
     private final GithubHttpClient githubHttpClient;
-    private final BotHttpClient botHttpClient;
+    private final UpdatesHandler updatesHandler;
     @Value("${app.scheduler.old-links-hour-period:1}")
     private int hoursCheckPeriod;
+    private Counter processedUpdatesCounter;
 
     @Autowired
     public LinkUpdateScheduler(
@@ -38,13 +41,15 @@ public class LinkUpdateScheduler {
         UserService userService,
         HttpClient stackoverflowHttpClient,
         HttpClient githubHttpClient,
-        BotHttpClient botHttpClient
+        UpdatesHandler updatesHandler,
+        Counter processedUpdatesCounter
     ) {
         this.linkService = linkService;
         this.userService = userService;
         this.stackoverflowHttpClient = (StackoverflowHttpClient) stackoverflowHttpClient;
         this.githubHttpClient = (GithubHttpClient) githubHttpClient;
-        this.botHttpClient = botHttpClient;
+        this.updatesHandler = updatesHandler;
+        this.processedUpdatesCounter = processedUpdatesCounter;
     }
 
     @Scheduled(fixedDelayString = "#{@scheduler.interval}")
@@ -79,8 +84,10 @@ public class LinkUpdateScheduler {
         while (!queue.isEmpty()) {
             LinkUpdateRequest request = queue.poll();
             try {
-                botHttpClient.update(request);
+                updatesHandler.update(request);
+                processedUpdatesCounter.increment();
             } catch (Exception ex) { // TODO change exception class
+                log.warn(ex);
                 queue.add(request);
             }
         }
