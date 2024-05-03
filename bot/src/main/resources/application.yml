@@ -1,12 +1,32 @@
 app:
   telegram-token: ${TELEGRAM_API_KEY}
   allowed-domains: github.com,stackoverflow.com
+  kafka-queue:
+    bootstrap-server: localhost:9092
+    topic-name: botUpdates
+    consumer-updates-group-id: updates
+    auto-offset-reset: latest
+    enable-auto-commit: false
+    ack-mode: manual
+    dlq:
+      postfix: _dlq
+      partitions-count: 1
+      replicas-count: 1
+  metrics:
+    processed_updates_count:
+      name: processed_updates_count
+      description: Count of processed by bot updates
 
 spring:
   application:
     name: bot
   jackson:
     time-zone: UTC
+  cache:
+    cache-names:
+      - bucket4j-bot-rate-limit
+    caffeine:
+      spec: maximumSize=1000,expireAfterAccess=3600s
 
 server:
   port: 8090
@@ -17,6 +37,8 @@ clients:
     tgChatPath: /tg-chat
     linksPath: /links
     chatIdHeader: Tg-Chat-Id
+    backOffPolicy: constant
+    retryCodes: 500,502,503,504,429
 
 logging:
   config: classpath:log4j2-plain.xml
@@ -24,3 +46,47 @@ logging:
 springdoc:
   swagger-ui:
     path: /swagger-ui
+
+bucket4j:
+  enabled: true
+  filters:
+    - cache-name: bucket4j-bot-rate-limit
+      url: /updates
+      strategy: first
+      http-response-body: "{ \"code\": \"429\",
+             \"exceptionName\": \"Too Many Requests\",
+              \"exceptionMessage\": \"You generate too many requests, please, wait\",
+               \"description\": \"\",
+               \"stacktrace\": null}"
+      rate-limits:
+        - cache-key: "getRemoteAddr()"
+          bandwidths:
+            - capacity: 200
+              time: 1
+              unit: minutes
+              refill-speed: greedy
+
+management:
+  server:
+    port: 8190
+  endpoints:
+    web:
+      base-path: /
+      path-mapping:
+        prometheus: metrics
+      exposure:
+        include:
+          - info
+          - health
+          - prometheus
+    enabled-by-default: false
+  endpoint:
+    health:
+      enabled: true
+    info:
+      enabled: true
+    prometheus:
+      enabled: true
+  metrics:
+    tags:
+      application: ${spring.application.name}

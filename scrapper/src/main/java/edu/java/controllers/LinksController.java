@@ -10,7 +10,6 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,7 +25,7 @@ public class LinksController {
     private final LinkService linkService;
 
     @Autowired
-    public LinksController(@Qualifier("jdbcLinkService") LinkService linkService) {
+    public LinksController(LinkService linkService) {
         this.linkService = linkService;
     }
 
@@ -36,7 +35,7 @@ public class LinksController {
     ) {
         List<LinkResponse> links = linkService.getTrackedLinks(chatId)
             .stream()
-            .map(link -> new LinkResponse().id(link.id()).url(link.url()))
+            .map(link -> new LinkResponse().id(link.getId()).url(link.getUrl()))
             .toList();
         return ResponseEntity.ok(new ListLinksResponse().links(links));
     }
@@ -47,7 +46,7 @@ public class LinksController {
         @Valid @RequestBody AddLinkRequest request
     ) {
         Link link = linkService.addLinkTracking(chatId, request.getLink());
-        return ResponseEntity.ok(new LinkResponse().id(link.id()).url(link.url()));
+        return ResponseEntity.ok(new LinkResponse().id(link.getId()).url(link.getUrl()));
     }
 
     @DeleteMapping
@@ -56,6 +55,6 @@ public class LinksController {
         @Valid @RequestBody RemoveLinkRequest request
     ) {
         Link link = linkService.removeLinkTracking(chatId, request.getLink());
-        return ResponseEntity.ok(new LinkResponse().id(link.id()).url(link.url()));
+        return ResponseEntity.ok(new LinkResponse().id(link.getId()).url(link.getUrl()));
     }
 }

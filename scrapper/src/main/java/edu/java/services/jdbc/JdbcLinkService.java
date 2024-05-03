@@ -8,11 +8,9 @@ import java.time.OffsetDateTime;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.stereotype.Service;
 
 @AllArgsConstructor
 @Log4j2
-@Service("jdbcLinkService")
 public class JdbcLinkService implements LinkService {
     private JdbcLinkRepository linkRepository;
 

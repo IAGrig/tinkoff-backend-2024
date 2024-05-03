@@ -4,6 +4,20 @@ app:
     interval: 10s
     force-check-delay: 10s
     old-links-hour-period: 1
+  database-access-type: jdbc
+  useQueue: true
+  kafka-queue:
+    bootstrap-server: localhost:9092
+    topic-name: botUpdates
+    partitions-count: 3
+    replicas-count: 1
+    acks-mode: all
+    linger-ms: 10_000
+    enable-idempotence: true
+  metrics:
+    processed-updates-count:
+      name: processed_updates_count
+      description: Count of processed by scrapper updates
 
 spring:
   application:
@@ -12,9 +26,16 @@ spring:
     enabled: false
   datasource:
     url: jdbc:postgresql://localhost:5432/scrapper
-    hikari:
-      username: ${POSTGRES_USERNAME:postgres}
-      password: ${POSTGRES_PASSWORD:postgres}
+    username: ${POSTGRES_USERNAME:postgres}
+    password: ${POSTGRES_PASSWORD:postgres}
+    driver-class-name: org.postgresql.Driver
+  cache:
+    cache-names:
+      - bucket4j-scrapper-rate-limit
+    caffeine:
+      spec: maximumSize=1000,expireAfterAccess=3600s
+  jooq:
+    sql-dialect: postgres
 
 server:
   port: 8080
@@ -25,16 +46,67 @@ logging:
 scrapper:
   github:
     baseUrl: https://api.github.com
+    backOffPolicy: constant
+    retryCodes: 500,502,503,504
   stackoverflow:
     baseUrl: https://api.stackexchange.com/2.3
     questionsPath: /questions
+    questionAnswersPath: /answers
+    questionCommentsPath: /comments
+    backOffPolicy: constant
+    retryCodes: 500,502,503,504
 
 clients:
   bot:
     baseUrl: http://localhost:8090
     updatesPath: /updates
+    backOffPolicy: exponent
+    retryCodes: 500,502,503,504,429
 
 springdoc:
   swagger-ui:
     path: /swagger-ui
 
+bucket4j:
+  enabled: true
+  filters:
+    - cache-name: bucket4j-scrapper-rate-limit
+      url: /(tg-chat/.*|links)
+      strategy: first
+      http-response-body: "{ \"code\": \"429\",
+       \"exceptionName\": \"Too Many Requests\",
+        \"exceptionMessage\": \"You generate too many requests, please, wait\",
+         \"description\": \"\",
+         \"stacktrace\": null}"
+      rate-limits:
+        - cache-key: "getRemoteAddr()"
+          bandwidths:
+            - capacity: 200
+              time: 1
+              unit: minutes
+              refill-speed: greedy
+
+management:
+  server:
+    port: 8180
+  endpoints:
+    web:
+      base-path: /
+      path-mapping:
+        prometheus: metrics
+      exposure:
+        include:
+          - info
+          - health
+          - prometheus
+    enabled-by-default: false
+  endpoint:
+    health:
+      enabled: true
+    info:
+      enabled: true
+    prometheus:
+      enabled: true
+  metrics:
+    tags:
+      application: ${spring.application.name}
