@@ -34,6 +34,8 @@ spring:
       - bucket4j-scrapper-rate-limit
     caffeine:
       spec: maximumSize=1000,expireAfterAccess=3600s
+  jooq:
+    sql-dialect: postgres
 
 server:
   port: 8080

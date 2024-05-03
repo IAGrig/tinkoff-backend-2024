@@ -24,6 +24,7 @@ public class Link {
     private Long id;
     @Column(name = "domain_name")
     private String domain;
+    @Column(name = "url") // jooq mapping doesn't work properly without it
     private String url;
     private OffsetDateTime registered;
     @Column(name = "last_update")
